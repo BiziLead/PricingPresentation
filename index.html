@@ -24,6 +24,7 @@
       --accent: #078b88;
       --accent-2: #35b9b2;
       --accent-soft: rgba(7,139,136,.13);
+      --term-text: #075f5c;
       --complement: #f47a2a;
       --complement-2: #ffb44c;
       --complement-soft: rgba(244,122,42,.13);
@@ -54,6 +55,7 @@
       --muted: #a8bac8;
       --dim: #7890a2;
       --accent-soft: rgba(24,184,177,.15);
+      --term-text: #d6fffb;
       --complement-soft: rgba(244,122,42,.16);
       --shadow: 0 24px 80px rgba(0,0,0,.38);
     }
@@ -287,6 +289,12 @@
     .hotspot-popover strong { display:block; padding-left:26px; margin-bottom:6px; font-size:15px; }
     .hotspot-popover p { margin:0; color:var(--muted); font-size:13px; line-height:1.75; }
     .hotspot-close { position:absolute; top:8px; left:8px; width:28px; height:28px; border:0; border-radius:9px; background:var(--soft); color:var(--text); cursor:pointer; }
+    .bilingual-term { display:inline!important;width:auto!important;min-width:0!important;min-height:0!important;margin:0!important;padding:0 2px!important;writing-mode:horizontal-tb!important;grid-row:auto!important;grid-column:auto!important;font:inherit!important;line-height:inherit!important;text-align:inherit!important;direction:inherit;border-bottom:1px dotted currentColor;color:var(--term-text)!important;cursor:help;outline:none; }
+    .bilingual-term:hover,.bilingual-term:focus-visible,.bilingual-term[aria-expanded="true"] { color:var(--accent)!important;border-bottom-color:currentColor; }
+    :is(.value-flow strong,.price-core,.triad-result,.floor-diagram .is-price,.value-equation>strong,.evc-chain>strong,.triangle-core,.threshold-line strong,.causal-system>strong,.conjoint-flow>strong,.bundle-equation em,.fence-system>strong,.decision-bridge>strong,.workshop-button:not(.secondary):not(.danger),.nav-btn.primary,.orbit-core) .bilingual-term { color:#fff!important; }
+    :is(.value-flow strong,.price-core,.triad-result,.floor-diagram .is-price,.value-equation>strong,.evc-chain>strong,.triangle-core,.threshold-line strong,.causal-system>strong,.conjoint-flow>strong,.bundle-equation em,.fence-system>strong,.decision-bridge>strong,.workshop-button:not(.secondary):not(.danger),.nav-btn.primary,.orbit-core) .bilingual-term:is(:hover,:focus-visible,[aria-expanded="true"]) { color:#fff!important;border-bottom-style:solid; }
+    .term-tooltip { position:fixed;z-index:120;width:max-content;max-width:min(280px,calc(100vw - 28px));padding:9px 12px;border:1px solid var(--line-strong);border-radius:11px;background:var(--surface-solid);color:var(--text);box-shadow:var(--shadow);direction:ltr;text-align:center;font-family:Inter,Arial,sans-serif;font-size:13px;font-weight:800;line-height:1.45;opacity:0;visibility:hidden;translate:0 6px;transition:.16s ease;pointer-events:none; }
+    .term-tooltip.open { opacity:1;visibility:visible;translate:0; }
 
     .definition-card,.comparison-card,.metric-card,.class-question,.case-study-dashboard,.workshop-board {
       border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--surface-solid);
@@ -342,7 +350,7 @@
     @media (max-width: 900px) {
       :root { --sidebar: 0px; --topbar: 66px; --footer: 66px; }
       .app { grid-template-columns:1fr; }
-      .sidebar { position:fixed;right:0;top:0;width:min(82vw,310px);padding-top:max(104px,calc(env(safe-area-inset-top) + 86px));transform:translateX(105%);transition:transform .28s var(--ease);box-shadow:var(--shadow); }
+      .sidebar { position:fixed;right:0;top:0;width:min(86vw,330px);padding-top:max(104px,calc(env(safe-area-inset-top) + 86px));transform:translateX(105%);transition:transform .28s var(--ease);box-shadow:var(--shadow);overflow-y:auto;overscroll-behavior:contain; }
       .university-logo-wrap { top:max(18px,env(safe-area-inset-top)); }
       .sidebar.open { transform:none; }
       .sidebar-backdrop { display:block;position:fixed;z-index:15;inset:0;background:rgba(3,14,21,.45);opacity:0;visibility:hidden;transition:.25s ease; }
@@ -356,13 +364,24 @@
     }
 
     @media (max-width: 640px) {
-      .topbar { padding:0 max(13px,env(safe-area-inset-right)) 0 max(13px,env(safe-area-inset-left)); }
+      .topbar { position:relative;padding:0 max(13px,env(safe-area-inset-right)) 0 max(13px,env(safe-area-inset-left)); }
+      .topbar .title-wrap { margin-right:48px;max-width:calc(100% - 150px); }
+      .topbar .mobile-menu { position:absolute;right:max(13px,env(safe-area-inset-right));top:50%;translate:0 -50%;margin:0; }
       .icon-btn { width:36px;height:36px; }
       .top-actions .optional { display:none; }
       .stage { padding:12px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left)); }
-      .slide { inset:12px; }
-      .slide-frame { min-height:100%;padding:24px 20px;border-radius:20px; }
-      .slide.mobile-scroll .slide-frame { min-height:0; }
+      .slide { inset:0;padding:12px;display:block;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-gutter:stable; }
+      .slide-frame { width:100%;max-width:100%;height:auto!important;min-height:100%;padding:64px 20px 28px;border-radius:20px;transform:none!important;transform-origin:top center; }
+      .slide.mobile-scroll .slide-frame { min-height:100%;margin:0; }
+      .slide-frame :is(img,svg,canvas,table) { max-width:100%; }
+      .slide-frame :is(.pricing-slide,.brand-slide) { height:auto;min-height:calc(100% - 2px);align-content:start; }
+      .pricing-slide { width:100%;min-width:0;text-align:center; }
+      .pricing-slide > * { min-width:0;max-width:100%; }
+      .pricing-slide :is(div,section,form,label,output) { min-width:0; }
+      .pricing-slide > :is(.kicker,h1,h2,h3,.lead) { justify-self:center;text-align:center; }
+      .pricing-slide :is(.core-message,.instructor-cue,.conceptual-label) { margin-inline:auto;text-align:center; }
+      .pricing-slide :is(.panel,.card,.lens-triad section,.concept-columns section,.pricing-data-room section,.version-card,.challenge-card,.analysis-box) { text-align:center; }
+      .pricing-slide :is(.workshop-actions,.workshop-status) { justify-content:center; }
       .two-col, .section-layout { grid-template-columns:1fr; }
       .section-index { font-size:4.5rem; }
       .orbit { display:none; }
@@ -376,6 +395,34 @@
       .comparison-card,.process-diagram { grid-template-columns:1fr; }
       .comparison-card__side + .comparison-card__side { border-right:0; border-top:1px solid var(--line); }
       .process-step:not(:last-child)::after { content:"↓"; top:auto; left:50%; bottom:-13px; translate:-50% 50%; }
+      .lens-triad,.concept-columns,.elasticity-layout,.psm-layout,.fairness-split,.research-map,.version-ladder,.bundle-economics,.discount-board,.discount-inputs,.v2-grid,.version-review,.pricing-data-room,.decision-options,.decision-options.four,.evidence-options,.calculator,.calculator.compact,.evc-calc,.live-economics { grid-template-columns:1fr; }
+      .price-orbit { width:100%;aspect-ratio:auto;display:grid;gap:10px;border:0;border-radius:0; }
+      .price-orbit::before { display:none; }
+      .price-core,.price-link { position:static;inset:auto;width:100%;min-height:58px;transform:none!important;translate:0; }
+      .price-core { order:-1;border-radius:16px; }
+      .floor-diagram { grid-template-columns:1fr; }
+      .floor-diagram b { rotate:90deg; }
+      .floor-diagram span { grid-column:1; }
+      .pricing-triangle { width:100%;height:280px; }
+      .threshold-line { width:100%;grid-template-columns:1fr;margin:20px auto;justify-items:center; }
+      .threshold-line i { width:5px;height:34px; }
+      .evidence-ladder { grid-template-columns:1fr;align-items:stretch; }
+      .evidence-ladder div,.evidence-ladder div:nth-child(n) { min-height:0; }
+      .research-ladder,.value-equation,.evc-chain { flex-direction:column; }
+      .research-ladder>div,.value-equation>*,.evc-chain>* { width:100%; }
+      .conjoint-flow { grid-template-columns:1fr; }
+      .conjoint-flow>i { rotate:90deg; }
+      .choice-task,.fence-system>div { grid-template-columns:1fr; }
+      .choice-task button,.version-ladder section,.version-ladder section:nth-child(n),.version-card,.review-challenge { min-height:0; }
+      .sarvana-data-room section:nth-child(n) { grid-column:auto;display:block; }
+      .challenge-reminder { width:100%;flex-direction:column;justify-content:center;text-align:center; }
+      .challenge-reminder b { white-space:normal; }
+      #pricing-01 .cover-pricing { padding-inline:0; }
+      #pricing-01 h1 { white-space:normal; }
+      #pricing-01 .value-flow { grid-template-columns:1fr; }
+      #pricing-01 .value-flow>* { width:100%; }
+      #pricing-16 .elasticity-layout { grid-template-columns:1fr; }
+      #pricing-16 .formula-hero { white-space:normal; }
     }
 
     @media (max-width: 760px), (max-height: 520px) and (max-width: 1000px) {
@@ -405,7 +452,7 @@
 
     @media print {
       body { overflow:visible;background:white;color:#102d3f; }
-      .sidebar,.topbar,.bottom-bar,.ambient-grid,.motion-backdrop,.toast,.lesson-trigger,.lesson-drawer,.drawer-backdrop,.hotspot-popover { display:none; }
+      .sidebar,.topbar,.bottom-bar,.ambient-grid,.motion-backdrop,.toast,.lesson-trigger,.lesson-drawer,.drawer-backdrop,.hotspot-popover,.term-tooltip { display:none; }
       .app,.shell { display:block;height:auto; }
       .stage { padding:0;overflow:visible; }
       .slide { position:relative;inset:auto;display:block;opacity:1;visibility:visible;transform:none;page-break-after:always;width:100%;height:100vh;padding:20mm;overflow:hidden; }
@@ -415,7 +462,7 @@
     html body.projector-mode .app .slide h1 span,
     html body.projector-mode .app .slide h2 span { font-size:inherit!important; line-height:inherit!important; }
     /* Pricing presentation components */
-    .pricing-slide{display:grid;gap:clamp(12px,1.7vw,22px);position:relative;z-index:1}.pricing-slide h2{margin-bottom:0}.pricing-slide .core-message{margin-top:0}
+    .pricing-slide{display:grid;gap:clamp(12px,1.7vw,22px);position:relative;z-index:1}.pricing-slide h2{margin-bottom:0}.pricing-slide .core-message{margin-block:0;margin-inline:auto;text-align:center}
     .value-flow,.value-equation,.evc-chain,.research-ladder,.decision-bridge>div{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;direction:ltr}.value-flow>*{padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface-solid)}.value-flow strong{background:var(--accent);color:#fff}.value-flow b{padding:0;border:0;background:none;color:var(--accent)}
     .price-orbit{position:relative;width:min(520px,70vw);aspect-ratio:1;margin:auto;border:1px solid var(--line);border-radius:50%}.price-orbit:before{content:"";position:absolute;inset:18%;border:1px dashed var(--accent);border-radius:50%}.price-core{position:absolute;inset:34%;display:grid;place-items:center;border-radius:38%;background:linear-gradient(145deg,var(--accent-2),var(--accent));color:#fff;text-align:center;font-size:30px;font-weight:900}.price-core small{font-size:14px}.price-link{position:absolute;left:50%;top:50%;width:132px;min-height:52px;padding:9px;border:1px solid var(--line);border-radius:12px;background:var(--surface-solid);color:var(--text);font-weight:800;transform:translate(-50%,-50%) rotate(calc(var(--i)*72deg)) translateY(-230px) rotate(calc(var(--i)*-72deg));cursor:pointer}
     .lens-triad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.lens-triad section{min-height:190px;padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--surface-solid)}.lens-triad section>b{display:block;color:var(--dim);font-size:34px}.lens-triad strong{display:block;color:var(--accent);font-size:18px}.lens-triad p{color:var(--muted);line-height:1.7}.triad-result{grid-column:1/-1;width:fit-content;margin:auto;padding:10px 24px;border-radius:999px;background:var(--accent);color:#fff;font-weight:900}
@@ -512,7 +559,7 @@
     #pricing-01 .flow-icon{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
     #pricing-01 .value-flow b{display:none}
     #pricing-01 .value-flow strong{background:linear-gradient(135deg,var(--accent-2),var(--accent));box-shadow:0 10px 24px rgba(15,154,151,.18)}
-    #pricing-01 .core-message{width:min(780px,100%);margin-inline-start:auto;border-right:4px solid var(--accent);background:linear-gradient(90deg,var(--accent-soft),transparent)}
+    #pricing-01 .core-message{width:min(780px,100%);margin-inline:auto;border-right:4px solid var(--accent);background:linear-gradient(90deg,var(--accent-soft),transparent);text-align:center}
     body.projector-mode #pricing-01 h1{font-size:clamp(43px,3.9vw,52px)!important;white-space:nowrap}
     body.projector-mode #pricing-01 .cover-pricing{gap:12px}
     body.projector-mode #pricing-01 .value-flow{padding:10px}
@@ -530,7 +577,39 @@
       .challenge-reminder{display:grid}
       #pricing-01 .cover-pricing{align-content:start;padding-top:18px;gap:13px}
       #pricing-01 h1{white-space:normal;font-size:clamp(32px,10vw,43px)!important;letter-spacing:-.6px}
+      body.projector-mode #pricing-01 h1{white-space:normal!important;font-size:clamp(32px,10vw,43px)!important}
       #pricing-01 .value-flow{display:grid;grid-template-columns:1fr;padding:11px}
+      #pricing-02 .price-orbit{width:100%;height:auto;aspect-ratio:auto;display:grid;grid-template-columns:1fr;gap:10px;transform:none;margin-block:0;border:0;border-radius:0}
+      #pricing-02 .price-orbit::before{display:none}
+      #pricing-02 .price-core{position:static;inset:auto;grid-column:1/-1;min-height:92px;border-radius:18px;translate:0;transform:none}
+      #pricing-02 .price-link{position:static;inset:auto;width:100%;min-height:64px;translate:0;transform:none!important;text-align:center}
+      #pricing-05 .range-line,#pricing-11 .number-line{width:100%;height:auto;margin:4px auto;display:grid;gap:9px;border-top:0}
+      #pricing-05 .range-line>span,#pricing-11 .number-line>span{position:static;inset:auto;width:100%;min-width:0;padding:12px 10px;translate:0!important;transform:none!important;display:grid;gap:4px;border:1px solid var(--line);border-radius:13px;background:var(--surface-solid);text-align:center!important;white-space:normal}
+      #pricing-05 .range-line>span::before,#pricing-11 .number-line>span::before{width:42px;height:4px;margin:0 auto 5px;border-radius:99px;background:var(--accent)}
+      #pricing-05 .range-line .question{border-color:rgba(244,122,42,.45);background:var(--complement-soft)}
+      #pricing-05 .range-line small,#pricing-11 .number-line small{white-space:normal}
+      .pricing-slide>.workshop-button{justify-self:center;margin-inline:auto}
+      body.projector-mode #case-06b .pricing-slide{grid-template-columns:1fr;grid-auto-flow:row;gap:9px}
+      body.projector-mode #case-06b .pricing-slide>*{grid-column:1!important;grid-row:auto!important}
+      body.projector-mode #case-06b :is(#evidenceV2,#kpiV2){grid-template-columns:1fr}
+      .pricing-slide :is(input,select,textarea,output){text-align:center}
+      body.projector-mode #pricing-02 .price-orbit{width:100%;height:auto;aspect-ratio:auto;display:grid;grid-template-columns:1fr;gap:10px;transform:none;margin:0;border:0}
+      body.projector-mode #pricing-02 .price-orbit::before{display:none}
+      body.projector-mode #pricing-02 .price-core{position:static;inset:auto;width:100%;min-height:92px;translate:0;transform:none;border-radius:18px}
+      body.projector-mode #pricing-02 .price-link{position:static;inset:auto;width:100%;min-height:64px;translate:0;transform:none!important;text-align:center}
+      #pricing-05 .competition-reference{margin-inline:auto}
+      #pricing-05 .competition-reference>span{width:100%!important;max-width:none!important;margin-inline:auto}
+      body.projector-mode #pricing-09 .slide-frame{padding:76px 18px 28px}
+      #pricing-16 .formula-hero{width:100%;display:grid;gap:2px;place-items:center;padding:14px 10px;white-space:normal;overflow:hidden;text-align:center;direction:ltr}
+      #pricing-16 :is(#elasticPrice,#elasticQty){direction:ltr;unicode-bidi:plaintext;text-align:center}
+      body.projector-mode #pricing-16 .formula-hero span{font-size:clamp(20px,6.2vw,26px)!important;line-height:1.25!important}
+      #pricing-19 .psm-range{width:100%;margin:4px auto;display:grid;grid-template-columns:1fr;gap:9px;direction:rtl}
+      #pricing-19 .psm-range>span,#pricing-19 .psm-range i{position:static;inset:auto;width:100%;padding:11px;translate:0;display:block;border:1px solid var(--line);border-radius:12px;background:var(--surface-solid);text-align:center;white-space:normal;direction:ltr;unicode-bidi:isolate}
+      #pricing-19 .psm-range>div{height:auto;display:grid;gap:9px;background:none}
+      #pricing-19 .psm-range i::after{display:none}
+      #pricing-19 .psm-range .evc-marker{color:var(--complement);border-color:rgba(244,122,42,.4);background:var(--complement-soft)}
+      #case-06a .challenge-reminder{width:100%;padding:14px 10px;overflow:hidden}
+      body.projector-mode #case-06a .challenge-reminder b{width:100%;font-size:17px!important;line-height:1.35!important;white-space:normal;text-align:center;overflow-wrap:anywhere}
     }
     @media(min-width:641px) and (max-width:900px){#pricing-16 .elasticity-layout{grid-template-columns:1fr}}
   </style>
@@ -625,7 +704,7 @@
 
         <article class="slide" id="pricing-15" data-section="شواهد WTP" data-slide-title="Pricing Research Map" data-lesson-id="s15"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">Question → Method → Output</span><h2>Pricing Research Map</h2><div class="research-map"><section><span>QUESTION</span><b>مرز ادراکی قیمت چیست؟</b><i>Van Westendorp</i><strong>Perceptual Price Range</strong></section><section><span>QUESTION</span><b>Trade-off ویژگی و Price چیست؟</b><i>Conjoint</i><strong>Preference / Part-worth / Scenario</strong></section><section><span>QUESTION</span><b>آیا مشتری در این Price اقدام می‌کند؟</b><i>Pre-order / Field Test</i><strong>Behavioral Evidence</strong></section><section><span>QUESTION</span><b>در بازار واقعاً چه رخ داده است؟</b><i>Transaction Data</i><strong>Observed Behavior</strong></section></div><div class="core-message">روش تحقیق را براساس سؤال تصمیم انتخاب کن؛ یک روش همیشه بهتر نیست.</div></div></div></article>
 
-        <article class="slide" id="pricing-16" data-section="تقاضا و کشش" data-slide-title="Price Elasticity" data-lesson-id="s16"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">Demand Response</span><h2>Price Elasticity</h2><div class="elasticity-layout"><div><div class="formula-hero">Elasticity = %ΔQ ÷ %ΔP</div><div class="calculator compact"><label>تغییر قیمت ٪<input id="elasticPrice" value="10" inputmode="decimal"></label><label>تغییر مقدار ٪<input id="elasticQty" value="-12" inputmode="decimal"></label><output><span>Elasticity</span><strong id="elasticOutput">−۱٫۲۰</strong></output></div></div><svg class="demand-curve" viewBox="0 0 500 280" role="img" aria-label="منحنی مفهومی تقاضا"><line x1="55" y1="20" x2="55" y2="240"/><line x1="55" y1="240" x2="470" y2="240"/><path d="M85 48 C180 70 280 125 440 218"/><circle cx="175" cy="88" r="8"/><circle cx="330" cy="160" r="8"/><text x="18" y="32">Price</text><text x="405" y="270">Quantity</text></svg></div><div class="core-message">Elasticity درباره حساسیت در یک بازه است؛ نه یک عدد ثابت برای همیشه.</div></div></div></article>
+        <article class="slide" id="pricing-16" data-section="تقاضا و کشش" data-slide-title="Price Elasticity" data-lesson-id="s16"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">Demand Response</span><h2>Price Elasticity</h2><div class="elasticity-layout"><div><div class="formula-hero"><span>Elasticity =</span><span>%ΔQ ÷ %ΔP</span></div><div class="calculator compact"><label>تغییر قیمت ٪<input id="elasticPrice" value="۱۰" inputmode="decimal"></label><label>تغییر مقدار ٪<input id="elasticQty" value="−۱۲" inputmode="decimal"></label><output><span>Elasticity</span><strong id="elasticOutput">−۱٫۲۰</strong></output></div></div><svg class="demand-curve" viewBox="0 0 500 280" role="img" aria-label="منحنی مفهومی تقاضا"><line x1="55" y1="20" x2="55" y2="240"/><line x1="55" y1="240" x2="470" y2="240"/><path d="M85 48 C180 70 280 125 440 218"/><circle cx="175" cy="88" r="8"/><circle cx="330" cy="160" r="8"/><text x="18" y="32">Price</text><text x="405" y="270">Quantity</text></svg></div><div class="core-message">Elasticity درباره حساسیت در یک بازه است؛ نه یک عدد ثابت برای همیشه.</div></div></div></article>
 
         <article class="slide" id="pricing-17" data-section="تقاضا و کشش" data-slide-title="Correlation و Price Causality" data-lesson-id="s17"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">Causal Guardrail</span><h2>Correlation ≠ Price Causality</h2><div class="causal-system"><strong>PRICE CHANGE</strong><div class="confounders"><span>Promotion</span><span>Season</span><span>Distribution</span><span>Competitor</span><span>Inventory</span></div><b>↓</b><strong>OBSERVED DEMAND</strong></div><div class="instructor-cue">چرا داده تاریخی برای Causal Elasticity کافی نیست؟</div><div class="core-message">از داده تاریخی به‌سادگی «کشش علّی» نساز.</div></div></div></article>
 
@@ -661,7 +740,7 @@
 
         <article class="slide case-slide" id="case-06b" data-section="هیئت تصمیم قیمت" data-slide-title="V2؛ شواهد و منطق" data-lesson-id="c06b"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">V2 · Evidence, Test &amp; Rationale</span><h2>نسخه دوم — شواهد و منطق</h2><h3>سه Evidence از Pool اصلی</h3><div class="multi-select evidence-options" id="evidenceV2" data-max="3"><button type="button" data-value="Contribution Margin">Contribution Margin</button><button type="button" data-value="EVC">EVC</button><button type="button" data-value="PSM Range">PSM Range</button><button type="button" data-value="Customer Simplicity Need">Customer Simplicity Need</button><button type="button" data-value="Brand Premium Signal">Brand Premium Signal</button><button type="button" data-value="Sales Discount Request">Sales Discount Request</button><button type="button" data-value="Unknown Elasticity">Unknown Elasticity</button><button type="button" data-value="Missing Conjoint">Missing Conjoint</button></div><h3>دو تا سه KPI</h3><div class="multi-select evidence-options" id="kpiV2" data-max="3"><button type="button" data-value="Conversion Rate">Conversion Rate</button><button type="button" data-value="CM per Order">CM per Order</button><button type="button" data-value="Average Basket">Average Basket</button><button type="button" data-value="Return / Complaint">Return / Complaint</button><button type="button" data-value="Perceived Clarity">Perceived Clarity</button><button type="button" data-value="Price Acceptance">Price Acceptance</button></div><div class="two-col compact-fields"><label>Guardrail<input id="guardrailV2"></label><label>Risk<input id="riskV2"></label></div><label>Rationale<textarea id="rationaleV2" rows="2"></textarea></label><div class="workshop-actions"><button type="button" class="workshop-button" id="saveV2">ثبت و قفل V2</button><button type="button" class="workshop-button secondary" id="editV2" hidden>ویرایش V2</button></div><div class="workshop-status" id="statusV2" role="status" aria-live="polite"></div><div class="core-message">تغییر تصمیم بدون تغییر منطق، بازطراحی واقعی نیست.</div></div></div></article>
 
-        <article class="slide case-slide" id="case-07" data-section="هیئت تصمیم قیمت" data-slide-title="مرور نهایی تصمیم" data-lesson-id="c07"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">Decision Review</span><h2>V1 → Challenge → V2</h2><div class="version-review"><section class="version-card"><h3>V1</h3><div id="summaryV1">هنوز ثبت نشده است.</div></section><section class="review-challenge"><h3>CHALLENGE</h3><p id="reviewChallenge">هنوز Challenge ثبت نشده است.</p></section><section class="version-card"><h3>V2</h3><div id="summaryV2">هنوز ثبت نشده است.</div></section></div><button type="button" class="workshop-button secondary" id="toggleAnalysis">تحلیل پیشنهادی مدرس</button><div class="analysis-box" id="suggestedAnalysis"><b>این تنها پاسخ صحیح نیست.</b><br>با داده‌های فعلی، Guided Bundle با قیمت ۲٫۱۰ میلیون تومان گزینه قابل دفاعی برای Test است، نه Price نهایی. CM حدود ۹۰۰ هزار تومان و CM Rate حدود ۴۲٫۸۶٪ است؛ بالاتر از Guardrail ۲۵٪، داخل Range ادراکی PSM و پایین‌تر از EVC آموزشی ۲٫۴۳ میلیون. بااین‌حال PSM رفتار واقعی نیست، Elasticity علّی ناشناخته است و Conjoint کامل اجرا نشده؛ بنابراین Behavioral Test ضروری است.<br>تخفیف مستقیم ۱۰٪، CM را از ۹۰۰ به ۶۹۰ هزار کاهش می‌دهد و حدود ۳۰٫۴۳٪ رشد حجم می‌خواهد.<br><b>کیفیت منطق، شواهد و طراحی آزمون مهم‌تر از تطابق با پاسخ مدرس است.</b></div><div class="core-message">قیمت بدون هماهنگی با تجربه و آمیخته بازاریابی هنوز کامل نیست.</div></div></div></article>
+        <article class="slide case-slide" id="case-07" data-section="هیئت تصمیم قیمت" data-slide-title="مرور نهایی تصمیم" data-lesson-id="c07"><div class="slide-frame"><div class="pricing-slide"><span class="kicker">Decision Review</span><h2>V1 → Challenge → V2</h2><div class="version-review"><section class="version-card"><h3>V1</h3><div id="summaryV1">هنوز ثبت نشده است.</div></section><section class="review-challenge"><h3>CHALLENGE</h3><p id="reviewChallenge">هنوز چالشی ثبت نشده است.</p></section><section class="version-card"><h3>V2</h3><div id="summaryV2">هنوز ثبت نشده است.</div></section></div><button type="button" class="workshop-button secondary" id="toggleAnalysis">تحلیل پیشنهادی مدرس</button><div class="analysis-box" id="suggestedAnalysis"><b>این فقط یک پاسخ پیشنهادی است.</b><br>با داده‌های فعلی، بسته راهنمایی‌شده با قیمت ۲٫۱۰ میلیون تومان می‌تواند گزینه‌ای قابل‌دفاع برای آزمون باشد؛ اما هنوز قیمت نهایی نیست. حاشیه مشارکت این گزینه حدود ۹۰۰ هزار تومان و نرخ آن حدود ۴۲٫۸۶ درصد است. این نرخ از مرز مالی ۲۵ درصد بیشتر، در محدوده ادراکی PSM و پایین‌تر از ارزش اقتصادی آموزشی ۲٫۴۳ میلیون تومان است.<br>بااین‌حال، PSM رفتار واقعی خرید را نشان نمی‌دهد، کشش قیمتی هنوز ناشناخته است و تحلیل انتخاب مشترک کامل اجرا نشده است؛ بنابراین یک آزمون رفتاری لازم است.<br>تخفیف مستقیم ۱۰ درصدی، حاشیه مشارکت را از ۹۰۰ به ۶۹۰ هزار تومان کاهش می‌دهد و برای جبران آن حدود ۳۰٫۴۳ درصد رشد حجم نیاز داریم.<br><b>کیفیت استدلال، شواهد و طراحی آزمون از شباهت پاسخ به نظر مدرس مهم‌تر است.</b></div><div class="core-message">قیمت بدون هماهنگی با تجربه و آمیخته بازاریابی هنوز کامل نیست.</div></div></div></article>
 
       </section>
 
@@ -688,6 +767,7 @@
     <button class="hotspot-close" id="hotspotCloseBtn" type="button" aria-label="بستن توضیح">×</button>
     <strong id="hotspotTitle"></strong><p id="hotspotText"></p>
   </aside>
+  <div class="term-tooltip" id="termTooltip" role="tooltip" aria-hidden="true"></div>
 
   <template id="mbaComponentTemplates">
     <section data-component="definition-card" class="definition-card"><div class="definition-card__term">عنوان مفهوم</div><p class="definition-card__text">تعریف روشن و کوتاه مفهوم.</p></section>
@@ -713,40 +793,40 @@
       };
 
       const lessonContent = {
-        s01:{title:"Pricing در این بخش یعنی چه؟",overview:"Pricing Strategy تعیین می‌کند چه مقدار ارزش، برای چه مشتری و با چه ساختاری به درآمد تبدیل شود.",importance:"قیمت بر تقاضا، حاشیه مشارکت، جایگاه برند و کانال اثر می‌گذارد.",example:"هزینه مشابه می‌تواند با Value و WTP متفاوت به قیمت متفاوت برسد.",commonMistake:"Price = Cost + Margin"},
-        s02:{title:"یک عدد؛ چند پیامد",overview:"قیمت هم‌زمان تصمیم اقتصادی، مرجع ذهنی و Signal بازار است.",importance:"Pricing نباید آخرین تصمیم صرفاً مالی باشد.",example:"افزایش قیمت ممکن است CM را بالا و Conversion را پایین ببرد.",commonMistake:"محصول تمام شده؛ حالا ببینیم چند بفروشیم."},
-        s03:{title:"Pricing با سه لنز",overview:"Cost کف، Competition زمینه، و Value/WTP منطق پرداخت را می‌سازند.",importance:"تصمیم حرفه‌ای ترکیبی از شواهد و Objective است.",example:"سه عدد متفاوت، یک Test طراحی‌شده می‌خواهند.",commonMistake:"یک رویکرد را تنها روش درست دانستن."},
-        s04:{title:"نقش Cost",overview:"Cost کف اقتصادی را می‌سازد، نه ارزش مشتری را.",importance:"بدون Floor، رشد می‌تواند اقتصاد واحد را تخریب کند.",example:"فروش زیر Variable Cost معمولاً زیان را با حجم بیشتر می‌کند.",commonMistake:"Cost + درصد ثابت = Price"},
-        s05:{title:"نقش رقابت",overview:"Competitor Price یک Reference است، نه Truth و نه دستور؛ اقتصاد، هدف و ساختار پیشنهاد رقیب ممکن است متفاوت باشد.",importance:"Date، Currency و Market Context داده رقابتی باید مشخص باشد.",example:"کاهش ۱۰٪ رقیب الزاماً تقلید ۱۰٪ نمی‌خواهد.",commonMistake:"Competitor Price = Correct Price"},
-        s06:{title:"Value-Based Pricing",overview:"نقطه شروع ارزش مشتری است اما Cost و Evidence حذف نمی‌شوند.",importance:"امکان کسب سهم بیشتری از Value Created را فراهم می‌کند.",example:"Savings و Risk Reduction می‌توانند Value بسازند.",commonMistake:"محصول عالی است؛ مشتری هر قیمتی می‌پردازد."},
-        s07:{title:"Integrated Pricing",overview:"Cost، Competition، Value، WTP و Objective پرسش‌های متفاوتی دارند.",importance:"یکپارچگی از تصمیم تک‌منبعی جلوگیری می‌کند.",example:"هدف نفوذ و برداشت ارزش Test متفاوت می‌سازند.",commonMistake:"Value-Based همیشه درست است."},
-        s08:{title:"Contribution Margin",overview:"CM سهم هر واحد پس از هزینه متغیر برای Fixed Cost و Profit است.",importance:"Discount از CM کم می‌کند، نه فقط Revenue.",example:"۲٫۱۰ − ۱٫۲۰ = ۰٫۹۰ میلیون؛ ۴۲٫۸۶٪.",commonMistake:"تصمیم Discount فقط براساس Revenue."},
-        s09:{title:"اقتصاد تخفیف",overview:"CM از ۰٫۹۰ به ۰٫۶۹ می‌رسد و حفظ Contribution حدود ۳۰٫۴۳٪ رشد حجم می‌خواهد.",importance:"مرجوعی، ظرفیت و Brand Signal می‌توانند ریسک را بیشتر کنند.",example:"۹۰۰ ÷ ۶۹۰ ≈ ۱٫۳۰۴۳.",commonMistake:"۱۰٪ تخفیف فقط ۱۰٪ حجم بیشتر می‌خواهد."},
-        s10:{title:"EVC چیست؟",overview:"EVC ارزش اقتصادی نسبت به گزینه مرجع را برآورد می‌کند.",importance:"در B2B زبان اقتصادی مشترک می‌سازد.",example:"Reference + Benefits − Costs/Risks.",commonMistake:"EVC = Price"},
-        s11:{title:"تفسیر EVC",overview:"EVC یک Model Estimate است؛ WTP و رفتار هنوز ناشناخته‌اند.",importance:"فاصله EVC و Price فرصت فرضیه‌سازی است.",example:"۱٫۷۵ + ۰٫۶۸ = ۲٫۴۳ میلیون.",commonMistake:"EVC را قیمت درست نامیدن."},
-        s12:{title:"EVC، WTP و Price",overview:"EVC برآورد Value، WTP آستانه مشتری و Price تصمیم مدیریتی است.",importance:"EVC بالا و WTP پایین نیازمند بررسی باور، RTB، قدرت خرید و جایگزین است.",example:"Value بالا بدون اعتماد به انتخاب تبدیل نمی‌شود.",commonMistake:"تبدیل مستقیم EVC به Price."},
-        s13:{title:"WTP چیست؟",overview:"WTP به زمان، نمونه، Reference و گزینه‌های جایگزین وابسته است.",importance:"Date، Currency و Market Context در بازار ایران باید همراه نتیجه باشد.",example:"داده WTP در تورم و نوسان ارز سریع کهنه می‌شود.",commonMistake:"WTP = Survey Answer"},
-        s14:{title:"اظهار با رفتار یکی نیست",overview:"Direct Stated WTP و Purchase Intent شواهد اظهاری‌اند؛ Choice واقعی‌نما، Commitment و Transaction پیامد رفتاری بیشتری دارند.",importance:"این Ladder قاعده مطلق نیست؛ کیفیت Design، Sample و Context همچنان تعیین‌کننده است.",example:"گفتن ۲٫۳ میلیون با پرداخت آن یکی نیست.",commonMistake:"Purchase Intent = WTP واقعی"},
-        s15:{title:"روش تحقیق مناسب",overview:"روش‌ها رتبه‌بندی مطلق ندارند؛ PSM، Conjoint، Field Test و Transaction Data به سؤال‌های متفاوت پاسخ می‌دهند.",importance:"Question → Method → Output؛ روش را براساس سؤال تصمیم انتخاب کنید.",example:"PSM برای مرز ادراکی و Conjoint برای Trade-off مناسب‌تر است.",commonMistake:"یک روش همیشه از روش دیگر بهتر است."},
-        s16:{title:"Price Elasticity",overview:"مثال ۱۰٪ و −۱۲٪ یک محاسبه آموزشی ساده است. در تحلیل حرفه‌ای باید تعریف درصد تغییر مشخص باشد؛ برای مقایسه دو نقطه، Midpoint Method می‌تواند عدم تقارن را کاهش دهد.",importance:"Elasticity معمولاً Local و Range-specific است، نه Constant برای کل Demand Curve.",example:"۱۰٪ Price و −۱۲٪ Quantity → حدود −۱٫۲ با تعریف ساده درصد تغییر.",commonMistake:"Elasticity ثابت برای تمام Range یا محاسبه بدون اعلام روش."},
-        s17:{title:"Correlation ≠ Causality",overview:"Promotion، فصل، توزیع و رقابت هم‌زمان با Price تغییر می‌کنند.",importance:"داده تاریخی الزاماً اثر علّی نمی‌دهد.",example:"کاهش فروش شاید با کاهش Distribution هم‌زمان باشد.",commonMistake:"Historical Correlation = Causal Elasticity"},
-        s18:{title:"Van Westendorp PSM",overview:"نمودار این اسلاید مفهومی است و داده واقعی سروانا نیست. چهار سؤال ادراکی مرزهای Price را برای Exploration می‌سازند.",importance:"PSM ابزار Profit Optimization نیست.",example:"Too Cheap، Cheap، Expensive، Too Expensive.",commonMistake:"PSM = Profit Optimum"},
-        s19:{title:"خواندن PSM",overview:"Range آموزشی فقط محدوده بررسی است و باید با Date، Currency و Context گزارش شود.",importance:"PSM با EVC، CM و Behavioral Test ترکیب می‌شود.",example:"۲٫۱۰ داخل Range است، اما Price نهایی نیست.",commonMistake:"وسط Range = قیمت علمی"},
-        s20:{title:"Conjoint Analysis",overview:"Trade-off از الگوی Choice میان ترکیب ویژگی و Price استخراج می‌شود.",importance:"انتخاب از رأی محبوبیت ویژگی واقعی‌تر است.",example:"Guidance بیشتر در برابر Price بالاتر.",commonMistake:"پرسیدن ویژگی مهم‌تر."},
-        s21:{title:"Choice Task",overview:"مطالعه به Attributes، Levels، Design، Tasks، Sample و Model نیاز دارد.",importance:"No Choice در بازار واقعی مهم است.",example:"چندین Task برای تخمین Part-worth لازم است.",commonMistake:"یک انتخاب = نتیجه آماری"},
-        s22:{title:"Versioning",overview:"چند نسخه برای نیاز و WTP متفاوت، Self-selection ایجاد می‌کند.",importance:"تفاوت نسخه باید Value واقعی داشته باشد.",example:"Basic، Guided، Professional.",commonMistake:"تضعیف مصنوعی نسخه ارزان."},
-        s23:{title:"Bundling",overview:"Bundle می‌تواند انتخاب را ساده و Basket را بزرگ کند.",importance:"Cannibalization، Margin Loss و Confusion باید سنجیده شود.",example:"Guided Bundle یک Hypothesis آموزشی است.",commonMistake:"Bundle = Discount"},
-        s24:{title:"Price Fence",overview:"Time، Quantity، Service، Eligibility، Commitment یا Usage تفاوت قیمت را توضیح می‌دهند.",importance:"Rule باید قابل فهم، اجرا و دفاع باشد.",example:"تعهد سالانه در برابر ماهانه.",commonMistake:"قیمت متفاوت بدون Rule."},
-        s25:{title:"Economics × Fairness",overview:"قیمت متفاوت به Segmentation، Fence، کنترل Arbitrage و Fairness نیاز دارد. این ارائه مشاوره حقوقی نیست.",importance:"امکان اقتصادی الزاماً دفاع اخلاقی یا حقوقی نیست؛ قوانین و الزامات محلی باید جداگانه بررسی شوند.",example:"تخفیف دانشجویی با احراز روشن.",commonMistake:"استفاده از اطلاعات حساس برای Extraction."},
-        c00:{title:"از تحلیل به Test",overview:"شواهد باید به یک Price Test تبدیل شوند.",importance:"هدف یادگیری است، نه ادعای قیمت قطعی.",example:"Pilot سی‌روزه با Guardrail.",commonMistake:"حدس قیمت درست."},
-        c01:{title:"Data Room",overview:"همه اعداد سروانا داده آموزشی یا فرض آموزشی‌اند.",importance:"Evidence، Constraint و Missing Evidence جدا هستند.",example:"PSM اظهاری و Elasticity ناشناخته است.",commonMistake:"داده فرضی را Fact بازار دانستن."},
-        c02:{title:"Decision & Evidence",overview:"یک مسیر و سه شاهد مستقل انتخاب کنید.",importance:"اقتصاد، مشتری و عدم‌قطعیت باید پوشش داده شوند.",example:"Bundle + CM + Simplicity + Unknown Elasticity.",commonMistake:"Confirmation Bias."},
-        c03:{title:"اقتصاد V1",overview:"Price و Cost، CM و Rate را می‌سازند؛ Structure نیز تصمیم است.",importance:"Guardrail زیر ۲۵٪ هشدار می‌دهد اما ثبت را نمی‌بندد.",example:"۲٫۱۰ و ۱٫۲۰ → ۰٫۹۰.",commonMistake:"نادیده‌گرفتن Offer Structure."},
-        c04:{title:"Test Design",overview:"یک Main Test، دو تا سه KPI، Guardrail و Risk تعریف کنید.",importance:"Test باید یک عدم‌قطعیت مهم را کم کند.",example:"Bundle Pilot با Conversion، CM و Complaint.",commonMistake:"چند Test هم‌زمان."},
-        c05:{title:"Challenge قفل‌شده",overview:"Challenge فقط یک‌بار تولید می‌شود. Challenge جدید Evidence یا Constraint مستقل است و جای Evidenceهای اصلی را نمی‌گیرد.",importance:"در Challenge افزایش هزینه، اگر Base Variable Cost برابر ۱٫۲۰M باشد، افزایش ۱۲٪ برابر ۱٫۳۴۴M است؛ این فقط Calculation Support است، نه پاسخ تصمیم.",example:"دانشجو باید خودش اثر افزایش Cost را بر Price، CM، Structure و Test تفسیر کند.",commonMistake:"تغییر خودکار V2 یا گرفتن Challenge آسان‌تر."},
-        c06a:{title:"V2 Economics & Decision",overview:"Price و Cost به‌صورت زنده CM، CM Rate و وضعیت Guardrail را می‌سازند؛ Challenge فقط یادآوری می‌شود و پاسخ را تحمیل نمی‌کند.",importance:"Cost یک External Fact است و Dimension تصمیم محسوب نمی‌شود، اما اثر آن باید در اقتصاد دیده شود.",example:"۱٫۲۰M × ۱٫۱۲ = ۱٫۳۴۴M.",commonMistake:"نادیده‌گرفتن اثر Cost یا تغییر خودکار تصمیم."},
-        c06b:{title:"V2 Evidence & Rationale",overview:"V2 همان Evidence Pool نسخه اول را دارد و سه شاهد، KPI، Guardrail، Risk و Rationale را ثبت می‌کند.",importance:"کمتر از دو تغییر در هشت Dimension تصمیم، Rationale کامل می‌خواهد.",example:"حفظ Bundle اما تغییر Price و KPI با منطق روشن.",commonMistake:"تغییر گزینه بدون تغییر منطق."},
-        c07:{title:"Review",overview:"V1، Challenge و V2 کنار هم دیده می‌شوند.",importance:"کیفیت Reasoning مهم‌تر از پاسخ مدرس است.",example:"۲٫۱۰ میلیون می‌تواند Test باشد، نه Price نهایی.",commonMistake:"تحلیل مدرس = تنها پاسخ صحیح"}
+        s01:{title:"راهبرد قیمت‌گذاری چیست؟",overview:"راهبرد قیمت‌گذاری مشخص می‌کند چه بخشی از ارزشی که برای مشتری ساخته‌ایم، با چه قیمت و ساختاری به درآمد تبدیل شود.",importance:"قیمت بر میزان تقاضا، سودآوری هر فروش، جایگاه برند و عملکرد کانال فروش اثر می‌گذارد.",example:"دو محصول با هزینه مشابه ممکن است به‌دلیل ارزش متفاوت برای مشتری، قیمت‌های متفاوتی داشته باشند.",commonMistake:"قیمت را فقط با افزودن درصدی ثابت به هزینه تعیین کنیم."},
+        s02:{title:"یک عدد با چند پیامد",overview:"قیمت هم یک تصمیم اقتصادی است، هم یک نقطه مقایسه برای مشتری و هم پیامی درباره کیفیت و جایگاه برند.",importance:"نباید قیمت را پس از پایان طراحی محصول و فقط به واحد مالی واگذار کرد.",example:"افزایش قیمت ممکن است سود هر فروش را بیشتر کند، اما تعداد خریداران را کاهش دهد.",commonMistake:"محصول آماده است؛ حالا فقط یک عدد برای فروش انتخاب کنیم."},
+        s03:{title:"سه نگاه مکمل به قیمت",overview:"هزینه، کف اقتصادی را نشان می‌دهد؛ رقابت، شرایط بازار را روشن می‌کند؛ و ارزش مشتری، دلیل پرداخت را توضیح می‌دهد.",importance:"تصمیم حرفه‌ای زمانی شکل می‌گیرد که هر سه نگاه همراه با هدف راهبردی بررسی شوند.",example:"اگر سه روش به سه عدد متفاوت رسیدند، باید یک آزمون واقعی برای کاهش ابهام طراحی کنیم.",commonMistake:"یکی از روش‌ها را همیشه و در همه بازارها درست بدانیم."},
+        s04:{title:"نقش هزینه در قیمت‌گذاری",overview:"هزینه نشان می‌دهد پایین‌تر از چه قیمتی اقتصاد فروش آسیب می‌بیند؛ اما ارزش مشتری را تعیین نمی‌کند.",importance:"بدون شناخت این کف، افزایش فروش می‌تواند زیان را بیشتر کند.",example:"فروش زیر هزینه متغیر معمولاً با افزایش حجم، زیان بیشتری می‌سازد.",commonMistake:"هزینه به‌اضافه یک درصد ثابت را قیمت نهایی بدانیم."},
+        s05:{title:"نقش قیمت رقبا",overview:"قیمت رقیب فقط یک نقطه مرجع است؛ زیرا هزینه، هدف و ساختار پیشنهاد او می‌تواند با ما متفاوت باشد.",importance:"تاریخ، واحد پول و شرایط بازارِ داده رقابتی باید مشخص باشد.",example:"تخفیف ۱۰ درصدی رقیب لزوماً به معنی نیاز ما به همان میزان تخفیف نیست.",commonMistake:"قیمت رقیب را قیمت درست بازار فرض کنیم."},
+        s06:{title:"قیمت‌گذاری مبتنی بر ارزش",overview:"این روش از ارزشی شروع می‌کند که مشتری دریافت می‌کند؛ اما هزینه و شواهد بازار را کنار نمی‌گذارد.",importance:"به کسب‌وکار کمک می‌کند سهم منصفانه‌تری از ارزش ساخته‌شده دریافت کند.",example:"صرفه‌جویی در زمان و کاهش ریسک می‌توانند برای مشتری ارزش اقتصادی بسازند.",commonMistake:"چون محصول عالی است، مشتری هر قیمتی را می‌پذیرد."},
+        s07:{title:"قیمت‌گذاری یکپارچه",overview:"هزینه، رقابت، ارزش، تمایل به پرداخت و هدف راهبردی، هرکدام به پرسشی متفاوت پاسخ می‌دهند.",importance:"ترکیب این شواهد مانع تصمیم‌گیری براساس فقط یک عدد می‌شود.",example:"هدف ورود سریع به بازار با هدف کسب سود بیشتر، آزمون‌های متفاوتی می‌خواهد.",commonMistake:"فقط یک رویکرد را برای همه تصمیم‌ها به‌کار ببریم."},
+        s08:{title:"حاشیه مشارکت",overview:"حاشیه مشارکت مبلغی است که پس از کسر هزینه متغیر از هر فروش باقی می‌ماند تا هزینه ثابت و سود را پوشش دهد.",importance:"تخفیف مستقیماً این مبلغ را کم می‌کند، نه اینکه فقط درآمد فروش را تغییر دهد.",example:"۲٫۱۰ منهای ۱٫۲۰ برابر با ۰٫۹۰ میلیون تومان و نرخ آن ۴۲٫۸۶ درصد است.",commonMistake:"اثر تخفیف را فقط روی درآمد بررسی کنیم."},
+        s09:{title:"اقتصاد تخفیف",overview:"با تخفیف ۱۰ درصدی، حاشیه مشارکت از ۰٫۹۰ به ۰٫۶۹ میلیون می‌رسد و برای جبران آن حدود ۳۰٫۴۳ درصد رشد حجم لازم است.",importance:"مرجوعی، محدودیت ظرفیت و پیام قیمتی برند می‌توانند ریسک تخفیف را بیشتر کنند.",example:"۹۰۰ تقسیم بر ۶۹۰ تقریباً برابر با ۱٫۳۰۴۳ است.",commonMistake:"فکر کنیم تخفیف ۱۰ درصدی فقط به ۱۰ درصد فروش بیشتر نیاز دارد."},
+        s10:{title:"ارزش اقتصادی برای مشتری (EVC)",overview:"EVC ارزش اقتصادی پیشنهاد ما را در مقایسه با بهترین گزینه جایگزین برآورد می‌کند.",importance:"این شاخص به‌ویژه در بازار سازمانی، زبان مشترکی برای توضیح ارزش می‌سازد.",example:"ارزش گزینه مرجع، به‌اضافه مزایای بیشتر، منهای هزینه‌ها و ریسک‌های بیشتر.",commonMistake:"EVC را همان قیمت نهایی بدانیم."},
+        s11:{title:"تفسیر ارزش اقتصادی برای مشتری",overview:"EVC یک برآورد تحلیلی است؛ هنوز نمی‌دانیم مشتری واقعاً چه مبلغی می‌پردازد یا چگونه رفتار می‌کند.",importance:"فاصله میان EVC و قیمت فعلی، زمینه‌ای برای ساختن و آزمودن فرضیه است.",example:"۱٫۷۵ به‌اضافه ۰٫۶۸ برابر با ۲٫۴۳ میلیون تومان است.",commonMistake:"EVC را قیمت قطعی و درست بنامیم."},
+        s12:{title:"تفاوت ارزش اقتصادی، تمایل به پرداخت و قیمت",overview:"EVC ارزش اقتصادی را برآورد می‌کند، WTP سقف پرداخت مشتری است و قیمت، تصمیم مدیریتی کسب‌وکار است.",importance:"اگر ارزش برآوردی بالا ولی تمایل به پرداخت پایین باشد، باید اعتماد، قدرت خرید، شواهد و گزینه‌های جایگزین را بررسی کنیم.",example:"ارزش بالا بدون اعتماد مشتری لزوماً به خرید تبدیل نمی‌شود.",commonMistake:"EVC را مستقیماً به قیمت تبدیل کنیم."},
+        s13:{title:"تمایل به پرداخت (WTP)",overview:"تمایل به پرداخت به زمان، گروه پاسخ‌دهندگان، گزینه مرجع و جایگزین‌های موجود وابسته است.",importance:"در بازار ایران باید تاریخ، واحد پول و شرایط بازار همراه نتیجه گزارش شود.",example:"داده تمایل به پرداخت در دوره تورم و نوسان ارز می‌تواند سریع کهنه شود.",commonMistake:"پاسخ یک پرسش‌نامه را رفتار واقعی خرید بدانیم."},
+        s14:{title:"گفتن با انجام‌دادن یکی نیست",overview:"اظهار تمایل به خرید یک شاهد گفتاری است؛ انتخاب واقعی‌نما، پیش‌سفارش و خرید واقعی، پیامد رفتاری بیشتری دارند.",importance:"این نردبان مطلق نیست و کیفیت طراحی پژوهش، نمونه و شرایط اجرا همچنان مهم است.",example:"گفتن «۲٫۳ میلیون می‌پردازم» با پرداخت واقعی آن یکسان نیست.",commonMistake:"قصد خرید اعلام‌شده را تمایل واقعی به پرداخت فرض کنیم."},
+        s15:{title:"انتخاب روش تحقیق مناسب",overview:"هر روش به سؤال متفاوتی پاسخ می‌دهد؛ PSM مرز ادراکی، تحلیل انتخاب مشترک ترجیحات، آزمون میدانی رفتار و داده تراکنش عملکرد واقعی را نشان می‌دهد.",importance:"ابتدا سؤال تصمیم را مشخص کنید، سپس روش و خروجی مناسب را انتخاب کنید.",example:"برای شناخت مرز ادراکی از PSM و برای سنجش بده‌بستان ویژگی و قیمت از تحلیل انتخاب مشترک استفاده می‌شود.",commonMistake:"یک روش را در همه شرایط برتر از روش‌های دیگر بدانیم."},
+        s16:{title:"کشش قیمتی تقاضا",overview:"مثال ۱۰ درصد و منفی ۱۲ درصد یک محاسبه آموزشی ساده است. در تحلیل حرفه‌ای باید روش محاسبه درصد تغییر را روشن کنیم.",importance:"کشش معمولاً برای یک محدوده مشخص معتبر است و برای کل منحنی تقاضا ثابت نمی‌ماند.",example:"با افزایش ۱۰ درصدی قیمت و کاهش ۱۲ درصدی مقدار، کشش ساده حدود منفی ۱٫۲ می‌شود.",commonMistake:"یک مقدار کشش را برای همه قیمت‌ها ثابت فرض کنیم یا روش محاسبه را نگوییم."},
+        s17:{title:"هم‌بستگی به معنی رابطه علّی نیست",overview:"تبلیغ، فصل، توزیع و رفتار رقبا ممکن است هم‌زمان با قیمت تغییر کنند.",importance:"به همین دلیل، داده تاریخی به‌تنهایی اثر واقعی تغییر قیمت را ثابت نمی‌کند.",example:"کاهش فروش ممکن است هم‌زمان با کاهش توزیع رخ داده باشد، نه فقط افزایش قیمت.",commonMistake:"هر هم‌بستگی تاریخی را اثر علّی قیمت بدانیم."},
+        s18:{title:"مدل حساسیت قیمتی ون‌وستندورپ (PSM)",overview:"نمودار این اسلاید مفهومی است. چهار پرسش، مرزهای ادراکی قیمت را برای بررسی بیشتر مشخص می‌کنند.",importance:"PSM سودآورترین قیمت را پیدا نمی‌کند.",example:"بیش از حد ارزان، ارزان، گران و بیش از حد گران.",commonMistake:"خروجی PSM را قیمت بهینه سود بدانیم."},
+        s19:{title:"چگونه محدوده PSM را بخوانیم؟",overview:"این محدوده آموزشی فقط بازه‌ای برای بررسی است و باید همراه تاریخ، واحد پول و شرایط بازار گزارش شود.",importance:"نتیجه PSM باید کنار EVC، حاشیه مشارکت و یک آزمون رفتاری بررسی شود.",example:"۲٫۱۰ میلیون داخل محدوده است، اما هنوز قیمت نهایی نیست.",commonMistake:"وسط محدوده را قیمت علمی و قطعی بدانیم."},
+        s20:{title:"تحلیل انتخاب مشترک",overview:"این روش از انتخاب میان چند ترکیبِ ویژگی و قیمت، ترجیحات مشتری را استخراج می‌کند.",importance:"انتخاب میان گزینه‌ها به رفتار واقعی نزدیک‌تر از پرسیدن مستقیمِ «کدام ویژگی مهم‌تر است؟» است.",example:"مشتری میان راهنمایی بیشتر و قیمت بالاتر انتخاب می‌کند.",commonMistake:"فقط درباره محبوبیت جداگانه هر ویژگی سؤال کنیم."},
+        s21:{title:"وظیفه انتخاب",overview:"یک مطالعه معتبر به ویژگی‌ها، سطح هر ویژگی، طراحی گزینه‌ها، چند وظیفه انتخاب، نمونه مناسب و مدل تحلیل نیاز دارد.",importance:"گزینه «هیچ‌کدام» نیز می‌تواند بخشی واقعی از بازار باشد.",example:"برای برآورد سهم هر ویژگی باید چند انتخاب از هر پاسخ‌دهنده ثبت شود.",commonMistake:"از یک انتخاب، نتیجه آماری کلی بگیریم."},
+        s22:{title:"نسخه‌بندی پیشنهاد",overview:"چند نسخه به مشتریان با نیاز و تمایل به پرداخت متفاوت اجازه می‌دهد گزینه مناسب خود را انتخاب کنند.",importance:"تفاوت نسخه‌ها باید ارزش واقعی و قابل‌فهم ایجاد کند.",example:"نسخه پایه، نسخه همراه با راهنما و نسخه حرفه‌ای.",commonMistake:"نسخه ارزان را عمداً آن‌قدر ضعیف کنیم که بی‌استفاده شود."},
+        s23:{title:"بسته‌بندی چند خدمت",overview:"ارائه چند جزء در یک بسته می‌تواند انتخاب را ساده‌تر و ارزش هر خرید را بیشتر کند.",importance:"جابه‌جایی فروش، کاهش حاشیه سود و سردرگمی مشتری باید سنجیده شود.",example:"بسته راهنمایی‌شده فعلاً یک فرضیه آموزشی برای آزمون است.",commonMistake:"هر بسته را فقط نوعی تخفیف بدانیم."},
+        s24:{title:"شرط تفکیک قیمت",overview:"زمان، تعداد، سطح خدمت، شرایط عضویت، مدت تعهد یا میزان استفاده می‌توانند تفاوت قیمت را توضیح دهند.",importance:"این قاعده باید برای مشتری قابل‌فهم، برای سازمان قابل‌اجرا و از نظر اخلاقی قابل‌دفاع باشد.",example:"قیمت اشتراک سالانه با اشتراک ماهانه متفاوت است.",commonMistake:"برای مشتریان مشابه، بدون دلیل روشن قیمت متفاوت تعیین کنیم."},
+        s25:{title:"اقتصاد و انصاف",overview:"قیمت متفاوت به بخش‌بندی روشن، شرط قابل‌دفاع و کنترل خرید و فروش مجدد نیاز دارد. این ارائه جایگزین مشاوره حقوقی نیست.",importance:"ممکن‌بودن یک تصمیم از نظر اقتصادی، به معنی اخلاقی یا قانونی‌بودن آن نیست.",example:"تخفیف دانشجویی با شرایط احراز روشن.",commonMistake:"برای گرفتن پول بیشتر از اطلاعات حساس مشتری استفاده کنیم."},
+        c00:{title:"از تحلیل تا آزمون",overview:"شواهد باید به یک آزمون قیمت مشخص و قابل‌اندازه‌گیری تبدیل شوند.",importance:"هدف آزمون، یادگیری و کاهش ابهام است؛ نه اثبات یک قیمت قطعی.",example:"یک اجرای آزمایشی سی‌روزه با مرز توقف مشخص.",commonMistake:"بدون آزمون، قیمت درست را حدس بزنیم."},
+        c01:{title:"اتاق داده",overview:"همه اعداد سروانا در این ارائه آموزشی یا فرضی‌اند.",importance:"باید شواهد موجود، محدودیت‌ها و شواهدِ ازدست‌رفته را از هم جدا کنیم.",example:"PSM بر گفته مشتری تکیه دارد و کشش قیمتی هنوز ناشناخته است.",commonMistake:"داده فرضی را واقعیت قطعی بازار بدانیم."},
+        c02:{title:"تصمیم و شواهد",overview:"یک مسیر تصمیم و سه شاهد مستقل انتخاب کنید.",importance:"شواهد باید اقتصاد، مشتری و عدم‌قطعیت تصمیم را پوشش دهند.",example:"بسته پیشنهادی، حاشیه مشارکت، نیاز به سادگی و نامشخص‌بودن کشش.",commonMistake:"فقط شواهدی را انتخاب کنیم که تصمیم اولیه ما را تأیید می‌کنند."},
+        c03:{title:"اقتصاد نسخه اول",overview:"قیمت و هزینه، حاشیه مشارکت و نرخ آن را می‌سازند؛ ساختار پیشنهاد نیز بخشی از تصمیم است.",importance:"نرخ کمتر از ۲۵ درصد هشدار می‌دهد، اما ثبت تصمیم را متوقف نمی‌کند.",example:"۲٫۱۰ منهای ۱٫۲۰ برابر با ۰٫۹۰ میلیون تومان است.",commonMistake:"ساختار پیشنهاد را در تصمیم قیمت نادیده بگیریم."},
+        c04:{title:"طراحی آزمون",overview:"یک آزمون اصلی، دو یا سه شاخص، یک مرز توقف و یک ریسک مهم تعریف کنید.",importance:"آزمون باید یکی از ابهام‌های مهم تصمیم را کمتر کند.",example:"اجرای آزمایشی بسته با سنجش نرخ تبدیل، حاشیه مشارکت و شکایت.",commonMistake:"چند تغییر را هم‌زمان آزمایش کنیم و ندانیم نتیجه از کدام تغییر آمده است."},
+        c05:{title:"چالش قفل‌شده",overview:"چالش فقط یک‌بار ساخته می‌شود و یک شاهد یا محدودیت تازه است؛ جای شواهد اصلی را نمی‌گیرد.",importance:"اگر هزینه متغیر پایه ۱٫۲۰ میلیون باشد، افزایش ۱۲ درصدی آن را به ۱٫۳۴۴ میلیون می‌رساند؛ این محاسبه فقط به تحلیل کمک می‌کند.",example:"دانشجو باید خودش اثر هزینه تازه را بر قیمت، حاشیه مشارکت، ساختار پیشنهاد و آزمون بررسی کند.",commonMistake:"پاسخ نسخه دوم را خودکار تغییر دهیم یا چالش آسان‌تری بخواهیم."},
+        c06a:{title:"اقتصاد و تصمیم نسخه دوم",overview:"قیمت و هزینه به‌صورت زنده حاشیه مشارکت، نرخ آن و وضعیت مرز مالی را نشان می‌دهند؛ چالش فقط یادآوری می‌شود.",importance:"هزینه یک واقعیت بیرونی است، اما اثر آن باید در اقتصاد تصمیم دیده شود.",example:"۱٫۲۰ ضرب‌در ۱٫۱۲ برابر با ۱٫۳۴۴ میلیون تومان است.",commonMistake:"اثر هزینه تازه را نادیده بگیریم یا تصمیم را بدون تحلیل خودکار عوض کنیم."},
+        c06b:{title:"شواهد و منطق نسخه دوم",overview:"نسخه دوم از همان مجموعه شواهد استفاده می‌کند و سه شاهد، شاخص‌ها، مرز توقف، ریسک و منطق تصمیم را ثبت می‌کند.",importance:"اگر کمتر از دو بخش تصمیم تغییر کند، باید دلیل حفظ تصمیم را کامل توضیح دهید.",example:"بسته حفظ شود، اما قیمت و شاخص‌های سنجش با منطق روشن تغییر کنند.",commonMistake:"فقط گزینه را عوض کنیم، بدون اینکه منطق تصمیم تغییر کند."},
+        c07:{title:"مرور تصمیم",overview:"نسخه اول، چالش و نسخه دوم کنار هم نمایش داده می‌شوند.",importance:"کیفیت استدلال و استفاده از شواهد مهم‌تر از شباهت پاسخ به نظر مدرس است.",example:"قیمت ۲٫۱۰ میلیون می‌تواند عدد مناسبی برای آزمون باشد، نه قیمت نهایی.",commonMistake:"تحلیل مدرس را تنها پاسخ صحیح بدانیم."}
       };
 
       const lessonFields = [
@@ -755,6 +835,56 @@
         ["example", "مثال", false],
         ["commonMistake", "خطای رایج", true]
       ];
+
+      const terminology = [
+        ["EVC","ارزش اقتصادی مشتری","Economic Value to Customer (EVC)"],["WTP","تمایل به پرداخت","Willingness to Pay (WTP)"],["PSM","مدل حساسیت قیمتی","Price Sensitivity Meter (PSM)"],["CM","حاشیه مشارکت","Contribution Margin (CM)"],["KPI","شاخص کلیدی عملکرد","Key Performance Indicator (KPI)"],
+        ["Pricing Strategy & Value Capture","راهبرد قیمت‌گذاری و کسب ارزش"],["Pricing Strategy","راهبرد قیمت‌گذاری"],["Value Creation","خلق ارزش"],["Value Capture","کسب ارزش"],["VALUE CREATED","ارزش خلق‌شده"],
+        ["Price as a System","قیمت به‌عنوان یک سیستم"],["Three Pricing Lenses","سه نگاه به قیمت‌گذاری"],["Integrated Pricing","قیمت‌گذاری یکپارچه"],["Cost-Based Pricing","قیمت‌گذاری مبتنی بر هزینه"],["Competition-Based Pricing","قیمت‌گذاری مبتنی بر رقابت"],["Value-Based Pricing","قیمت‌گذاری مبتنی بر ارزش"],
+        ["Economic Floor","کف اقتصادی"],["ECONOMIC FLOOR","کف اقتصادی"],["Market Reference","مرجع بازار"],["Customer Value","ارزش مشتری"],["Brand Signal","پیام برند"],["Strategic Objective","هدف راهبردی"],["PRICE DECISION","تصمیم قیمت"],
+        ["Lower-priced Competitor","رقیب ارزان‌تر"],["Higher-priced Competitor","رقیب گران‌تر"],["Reference Alternative","گزینه مرجع"],["Our Offer","پیشنهاد ما"],["LOWER","کمتر"],["HIGHER","بیشتر"],
+        ["Unit Economics","اقتصاد هر واحد فروش"],["Contribution Margin","حاشیه مشارکت"],["Variable Cost","هزینه متغیر"],["Fixed Cost","هزینه ثابت"],["CM Rate","نرخ حاشیه مشارکت"],["Revenue","درآمد فروش"],["Profit","سود"],
+        ["Discount Economics","اقتصاد تخفیف"],["Original Price","قیمت اولیه"],["New Price","قیمت جدید"],["Old CM","حاشیه مشارکت قبلی"],["New CM Rate","نرخ جدید حاشیه مشارکت"],["New CM","حاشیه مشارکت جدید"],["Required Volume Growth","رشد حجم موردنیاز"],
+        ["Economic Value to Customer","ارزش اقتصادی برای مشتری"],["Differential Benefits","مزایای بیشتر"],["Differential Costs / Risks","هزینه‌ها و ریسک‌های بیشتر"],["Model Estimate","برآورد تحلیلی"],["Willingness to Pay","تمایل به پرداخت"],
+        ["Direct Stated WTP / Purchase Intent","اظهار مستقیم تمایل به پرداخت یا قصد خرید"],["Direct Stated WTP","تمایل به پرداخت اعلام‌شده"],["Purchase Intent","قصد خرید"],["Realistic Choice","انتخاب واقعی‌نما"],["Pre-order / Commitment","پیش‌سفارش یا تعهد"],["Actual Transaction","خرید واقعی"],["Evidence Consequence","پیامد واقعی شاهد"],
+        ["Pricing Research Map","نقشه تحقیق قیمت"],["Question → Method → Output","پرسش ← روش ← خروجی"],["Perceptual Price Range","محدوده ادراکی قیمت"],["Behavioral Evidence","شاهد رفتاری"],["Transaction Data","داده تراکنش"],["Field Test","آزمون میدانی"],
+        ["Demand Response","واکنش تقاضا"],["Price Elasticity","کشش قیمتی"],["Causal Guardrail","مرز تحلیل علّی"],["Correlation ≠ Price Causality","هم‌بستگی ≠ اثر علّی قیمت"],["PRICE CHANGE","تغییر قیمت"],["OBSERVED DEMAND","تقاضای مشاهده‌شده"],
+        ["Perceptual Price Boundaries","مرزهای ادراکی قیمت"],["Van Westendorp PSM","مدل حساسیت قیمتی ون‌وستندورپ"],["Too Cheap","بیش از حد ارزان"],["Cheap / Good Value","ارزان یا ارزشمند"],["Too Expensive","بیش از حد گران"],["Expensive","گران"],["PERCEPTUAL RANGE","محدوده ادراکی"],
+        ["Conjoint Analysis","تحلیل انتخاب مشترک"],["Choice Task","وظیفه انتخاب"],["Part-worth Utilities","سهم ارزش هر ویژگی"],["Part-worth","سهم ارزش ویژگی"],["No Choice","هیچ‌کدام"],["Attributes","ویژگی‌ها"],["Levels","سطوح"],
+        ["Versioning","نسخه‌بندی"],["Bundling","بسته‌بندی"],["Price Fence","شرط تفکیک قیمت"],["Economics × Fairness","اقتصاد × انصاف"],["Self-selection","انتخاب خودکار مشتری"],["Cannibalization","جابه‌جایی فروش"],["Margin Loss","کاهش حاشیه سود"],
+        ["Data Room","اتاق داده"],["Decision & Evidence","تصمیم و شواهد"],["Test Design","طراحی آزمون"],["Decision Review","مرور تصمیم"],["New Evidence / New Constraint","شاهد یا محدودیت تازه"],["Financial Guardrail","مرز مالی"],["Offer Structure","ساختار پیشنهاد"],["Main Test","آزمون اصلی"],
+        ["CUSTOMER VALUE","ارزش مشتری"],["VARIABLE COST","هزینه متغیر"],["CONTRIBUTION","حاشیه مشارکت"],["COMPETITION","رقابت"],["ECONOMICS","اقتصاد"],["MARKET","بازار"],["PRICE","قیمت"],["COST","هزینه"],["VALUE","ارزش"],
+        ["Contribution","حاشیه مشارکت"],["Competition","رقابت"],["Economics","اقتصاد"],["Demand","تقاضا"],["Benefits","مزایا"],["Savings","صرفه‌جویی"],["Risk Reduction","کاهش ریسک"],["Outcome","نتیجه"],["Reference","مرجع"],["Guardrail","مرز توقف"],["Evidence","شاهد"],["Challenge","چالش"],["Rationale","منطق تصمیم"],["Cost","هزینه"],["Price","قیمت"],["Value","ارزش"],["Truth","حقیقت"],["Objective","هدف"],["Test","آزمون"],["Context","شرایط"],["Consequence","پیامد"],["Floor","کف"],
+        ["Critical Distinction","تفاوت بنیادی"],["Financial / Process Data","داده مالی و فرایندی"],["Choice / Experiment / Transaction","انتخاب، آزمایش و تراکنش"],["Decision System","سامانه تصمیم"],["Customer Threshold","آستانه مشتری"],["Low Price","قیمت پایین"],["No Purchase","نخریدن"],["Context-dependent","وابسته به شرایط"],
+        ["QUESTION","پرسش"],["Van Westendorp","ون‌وستندورپ"],["Trade-off","بده‌بستان"],["Conjoint","تحلیل انتخاب مشترک"],["Preference","ترجیح"],["Scenario","سناریو"],["Pre-order","پیش‌سفارش"],["Observed Behavior","رفتار مشاهده‌شده"],["Elasticity","کشش"],
+        ["Promotion","ترویج فروش"],["Season","فصل"],["Distribution","توزیع"],["Competitor","رقیب"],["Inventory","موجودی"],["Causal Elasticity","کشش علّی"],["Profit Optimum","بهینه سود"],["Profit","سود"],
+        ["Choice & Trade-off","انتخاب و بده‌بستان"],["Product Mix","ترکیب محصول"],["Guidance","راهنمایی"],["Support","پشتیبانی"],["CHOICE","انتخاب"],["PART-WORTH","سهم ارزش ویژگی"],["TRADE-OFF","بده‌بستان"],["Choice Experiment","آزمایش انتخاب"],["NO CHOICE","هیچ‌کدام"],
+        ["BASIC","پایه"],["GUIDED","راهنمایی‌شده"],["PROFESSIONAL","حرفه‌ای"],["Service","خدمت"],["Offer Architecture","معماری پیشنهاد"],["List Total","جمع قیمت جداگانه"],["GUIDED BUNDLE","بسته راهنمایی‌شده"],["Defensible Rules","قواعد قابل‌دفاع"],["PRICE DIFFERENCE","تفاوت قیمت"],
+        ["Time","زمان"],["Quantity","تعداد"],["Service Level","سطح خدمت"],["Eligibility","شرایط احراز"],["Commitment","تعهد"],["Usage","میزان استفاده"],["Price Discrimination","تبعیض قیمتی"],["DEFENSIBLE","قابل‌دفاع"],["PROBLEMATIC","مسئله‌دار"],["WTP Heterogeneity","تفاوت تمایل به پرداخت"],["Segmentation","بخش‌بندی"],["Fence","شرط تفکیک"],["Arbitrage Control","کنترل خرید و فروش مجدد"],["Fairness","انصاف"],
+        ["Decision Bridge","پل تصمیم"],["PRICE TEST","آزمون قیمت"],["Sarvana","سروانا"],["List Bundle Value","ارزش مجموع بسته"],["Product Cost","هزینه محصول"],["Additional VC","هزینه متغیر اضافه"],["Total VC","کل هزینه متغیر"],["Proposed Test Price","قیمت پیشنهادی آزمون"],["CM / Rate","حاشیه مشارکت و نرخ آن"],["Discount Price","قیمت پس از تخفیف"],["Discount CM","حاشیه مشارکت پس از تخفیف"],
+        ["Stakeholder Voice","دیدگاه ذی‌نفعان"],["Customer","مشتری"],["Sales","فروش"],["Brand","برند"],["Finance","مالی"],["Channel / Salon","کانال یا سالن"],["Constraints","محدودیت‌ها"],["Missing","شواهد ازدست‌رفته"],["Behavioral Validation","اعتبارسنجی رفتاری"],["Additional","اضافی"],["Data","داده"],["Certainty","قطعیت"],
+        ["Direct ۱۰٪ Discount","تخفیف مستقیم ۱۰٪"],["Guided Bundle at ۲٫۱۰M","بسته راهنمایی‌شده با قیمت ۲٫۱۰ میلیون"],["Increase Price","افزایش قیمت"],["Keep Current Offer","حفظ پیشنهاد فعلی"],["Create Multiple Versions","ساخت چند نسخه"],["Customer Simplicity Need","نیاز مشتری به سادگی"],["Brand Premium Signal","پیام ممتازبودن برند"],["Sales Discount Request","درخواست تخفیف تیم فروش"],["Unknown Elasticity","کشش نامشخص"],["Missing Conjoint","نبود تحلیل انتخاب مشترک"],
+        ["Standalone","فروش مستقل"],["Bundle","بسته"],["Versioned","نسخه‌بندی‌شده"],["Discount","تخفیف"],["Scale","گسترش اجرا"],["Pre-order Test","آزمون پیش‌سفارش"],["Controlled Price Test","آزمون کنترل‌شده قیمت"],["Guided Bundle Pilot","اجرای آزمایشی بسته راهنمایی‌شده"],["Channel Pilot","اجرای آزمایشی در کانال"],
+        ["Conversion Rate","نرخ تبدیل"],["CM per Order","حاشیه مشارکت هر سفارش"],["Average Basket","میانگین سبد خرید"],["Return / Complaint","مرجوعی یا شکایت"],["Perceived Clarity","شفافیت ادراک‌شده"],["Price Acceptance","پذیرش قیمت"],["Risk","ریسک"],["Locked","قفل‌شده"],["Case","مطالعه موردی"],["Decision V2","تصمیم نسخه دوم"],["PASS","مجاز"],["Pool","مجموعه"],["CHALLENGE","چالش"],["Guided Bundle","بسته راهنمایی‌شده"],
+        ["Lower-priced","ارزان‌تر"],["Higher-priced","گران‌تر"],["DECISION","تصمیم"],["PSM Range","محدوده PSM"],["Range","محدوده"],["Self-select","گزینه مناسب خود را انتخاب کند"],["Rule","قاعده"],["Premium Signal","پیام ممتازبودن"],["Margin Discipline","انضباط حاشیه سود"],["V1 · Decision","نسخه اول · تصمیم"],["V2 · Economics & Decision","نسخه دوم · اقتصاد و تصمیم"],["V2 · Evidence, Test & Rationale","نسخه دوم · شواهد، آزمون و منطق"],["Decision","تصمیم"],
+        ["حاشیه مشارکت","Contribution Margin"],["تمایل به پرداخت","Willingness to Pay"],["کشش قیمتی","Price Elasticity"],["تحلیل انتخاب مشترک","Conjoint Analysis"],["قیمت‌گذاری مبتنی بر هزینه","Cost-Based Pricing"],["قیمت‌گذاری مبتنی بر رقابت","Competition-Based Pricing"],["قیمت‌گذاری مبتنی بر ارزش","Value-Based Pricing"],["قیمت‌گذاری یکپارچه","Integrated Pricing"],["نسخه‌بندی","Versioning"],["بسته‌بندی","Bundling"],["شرط تفکیک قیمت","Price Fence"],["مرز توقف","Guardrail"],["شاهد رفتاری","Behavioral Evidence"],["نرخ تبدیل","Conversion Rate"]
+      ].map(([source,label,english]) => english?{source,fa:label,en:english}:(/[A-Za-z]/.test(source)?{source,fa:label,en:source}:{source,fa:source,en:label}));
+      const glossaryPattern = new RegExp(terminology.map(item=>item.source.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).sort((a,b)=>b.length-a.length).join("|"),"g");
+      const termBySource = new Map(terminology.map(item=>[item.source,item]));
+      function applyGlossary(root=document) {
+        const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){
+          if(!node.nodeValue?.trim()||node.parentElement?.closest("script,style,.bilingual-term,.term-tooltip,input,textarea,select,option"))return NodeFilter.FILTER_REJECT;
+          glossaryPattern.lastIndex=0;return glossaryPattern.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+        }});
+        const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+        nodes.forEach(node=>{
+          const fragment=document.createDocumentFragment();let last=0;glossaryPattern.lastIndex=0;
+          for(const match of node.nodeValue.matchAll(glossaryPattern)){
+            if(match.index>last)fragment.append(node.nodeValue.slice(last,match.index));
+            const item=termBySource.get(match[0]);const span=document.createElement("span");span.className="bilingual-term";span.tabIndex=0;span.dataset.term=item.en;span.setAttribute("role","button");span.setAttribute("aria-label",`${item.fa}؛ اصطلاح انگلیسی: ${item.en}`);span.setAttribute("aria-expanded","false");span.textContent=item.fa;fragment.append(span);last=match.index+match[0].length;
+          }
+          if(last<node.nodeValue.length)fragment.append(node.nodeValue.slice(last));node.replaceWith(fragment);
+        });
+      }
 
       const fa = value => String(value).replace(/\d/g, digit => "۰۱۲۳۴۵۶۷۸۹"[digit]);
       const slides = [...document.querySelectorAll(".slide")];
@@ -783,6 +913,7 @@
       const hotspotTitle = document.getElementById("hotspotTitle");
       const hotspotText = document.getElementById("hotspotText");
       const hotspotCloseBtn = document.getElementById("hotspotCloseBtn");
+      const termTooltip = document.getElementById("termTooltip");
       const componentTemplates = document.getElementById("mbaComponentTemplates");
       let index = 0;
       let toastTimer;
@@ -852,6 +983,7 @@
         prevBtn.disabled = index === 0;
         nextBtn.disabled = index === slides.length - 1;
         document.title = `${deck.title} — ${sections[sectionIndex]}`;
+        slides[index].scrollTop = 0;
         scheduleFit(slides[index]);
       }
       function go(target, options = {}) {
@@ -917,8 +1049,10 @@
         }
         let scale;
         if (isMobile) {
-          scale = Math.min(1, availableWidth / size.width);
-          slide.classList.toggle("mobile-scroll", size.height * scale > availableHeight + 1);
+          scale = 1;
+          slide.classList.add("mobile-scroll");
+          frame.style.removeProperty("height");
+          frame.style.setProperty("min-height", "100%");
         } else {
           scale = Math.max(minimumScale, naturalScale);
           slide.classList.toggle("fit-warning", naturalScale < minimumScale);
@@ -968,6 +1102,7 @@
         lastDrawerTrigger = trigger;
         lessonDrawerTitle.textContent = lesson.title || slide.dataset.slideTitle || slide.querySelector("h1,h2")?.textContent || "درسنامه";
         lessonDrawerBody.replaceChildren(...lessonFields.map(([key, label, warning]) => createLessonBlock(label, lesson[key], warning)));
+        applyGlossary(lessonDrawer);
         lessonDrawer.classList.add("open");
         lessonBackdrop.classList.add("open");
         lessonDrawer.setAttribute("aria-hidden", "false");
@@ -1007,6 +1142,7 @@
         activeHotspot = button;
         hotspotTitle.textContent = button.dataset.hotspotTitle || button.textContent.trim();
         hotspotText.textContent = button.dataset.hotspotText || "توضیح تکمیلی برای این نقطه تعریف نشده است.";
+        applyGlossary(hotspotPopover);
         button.setAttribute("aria-expanded", "true");
         hotspotPopover.classList.add("open");
         hotspotPopover.setAttribute("aria-hidden", "false");
@@ -1018,13 +1154,25 @@
         hotspotPopover.classList.remove("open");
         hotspotPopover.setAttribute("aria-hidden", "true");
       }
+      let activeTerm=null;
+      function positionTerm(term){
+        const rect=term.getBoundingClientRect(),tip=termTooltip.getBoundingClientRect();
+        const left=Math.min(Math.max(14,rect.left+(rect.width-tip.width)/2),innerWidth-tip.width-14);
+        const above=rect.top-tip.height-9,top=above>=14?above:Math.min(innerHeight-tip.height-14,rect.bottom+9);
+        termTooltip.style.left=`${left}px`;termTooltip.style.top=`${top}px`;
+      }
+      function openTerm(term){
+        if(activeTerm&&activeTerm!==term)activeTerm.setAttribute("aria-expanded","false");
+        activeTerm=term;termTooltip.textContent=term.dataset.term;term.setAttribute("aria-expanded","true");termTooltip.classList.add("open");termTooltip.setAttribute("aria-hidden","false");requestAnimationFrame(()=>positionTerm(term));
+      }
+      function closeTerm(){activeTerm?.setAttribute("aria-expanded","false");activeTerm=null;termTooltip.classList.remove("open");termTooltip.setAttribute("aria-hidden","true");}
       function createComponent(name) {
         const source = componentTemplates.content.querySelector(`[data-component="${name}"]`);
         return source ? source.cloneNode(true) : null;
       }
 
       const parseNumber = input => {
-        let normalized = String(input ?? "").trim().replace(/[۰-۹]/g, d => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/٫/g, ".").replace(/\s/g, "");
+        let normalized = String(input ?? "").trim().replace(/[۰-۹]/g, d => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[−–—]/g, "-").replace(/٫/g, ".").replace(/\s/g, "");
         normalized = /^-?\d+,\d{1,2}$/.test(normalized) ? normalized.replace(",", ".") : normalized.replace(/,/g, "");
         const value = Number(normalized);
         return Number.isFinite(value) ? value : null;
@@ -1057,7 +1205,7 @@
         document.getElementById("discountCm").textContent = faNumber(newCm);
         document.getElementById("discountCmRate").textContent = Number.isFinite(newRate) ? `${faNumber(newRate)}٪` : "—";
         document.getElementById("volumeGrowth").textContent = Number.isFinite(growth) ? `${faNumber(growth)}٪+` : "غیرقابل محاسبه";
-        document.getElementById("discountWarning").textContent = valid && newCm <= 0 ? "با این ساختار، افزایش حجم به‌تنهایی Contribution را جبران نمی‌کند." : (!valid ? "Original Price و Variable Cost معتبر وارد کنید." : "");
+        document.getElementById("discountWarning").textContent = valid && newCm <= 0 ? "با این ساختار، افزایش حجم به‌تنهایی حاشیه مشارکت ازدست‌رفته را جبران نمی‌کند." : (!valid ? "قیمت اولیه و هزینه متغیر معتبر وارد کنید." : "");
       }
       function updateEvc() {
         const reference = parseNumber(document.getElementById("evcReference")?.value);
@@ -1079,7 +1227,7 @@
         const rate = price > 0 ? cm / price * 100 : NaN;
         document.getElementById("v1Cm").textContent = faNumber(cm);
         document.getElementById("v1Rate").textContent = Number.isFinite(rate) ? `${faNumber(rate)}٪` : "—";
-        document.getElementById("v1FinancialWarning").textContent = Number.isFinite(rate) && rate < 25 ? "زیر Guardrail مالی ۲۵٪" : "";
+        document.getElementById("v1FinancialWarning").textContent = Number.isFinite(rate) && rate < 25 ? "کمتر از مرز مالی ۲۵٪" : "";
       }
       function updateV2Economics() {
         const price = parseNumber(document.getElementById("v2Price")?.value);
@@ -1089,9 +1237,9 @@
         const status = document.getElementById("v2GuardrailStatus");
         document.getElementById("v2Cm").textContent = faNumber(cm);
         document.getElementById("v2Rate").textContent = Number.isFinite(rate) ? `${faNumber(rate)}٪` : "—";
-        status.textContent = Number.isFinite(rate) ? (rate >= 25 ? "PASS" : "WARNING") : "—";
+        status.textContent = Number.isFinite(rate) ? (rate >= 25 ? "مجاز" : "هشدار") : "—";
         status.closest("output")?.classList.toggle("is-warning", Number.isFinite(rate) && rate < 25);
-        document.getElementById("v2FinancialWarning").textContent = Number.isFinite(rate) && rate < 25 ? "⚠ زیر Guardrail مالی ۲۵٪" : "";
+        document.getElementById("v2FinancialWarning").textContent = Number.isFinite(rate) && rate < 25 ? "⚠ کمتر از مرز مالی ۲۵٪" : "";
       }
       bindInputs(["cmPrice","cmCost"], updateCm);
       bindInputs(["discountOriginal","discountCost","discountRange"], updateDiscount);
@@ -1111,7 +1259,7 @@
             item.classList.toggle("selected", selected);
             item.setAttribute("aria-pressed", String(selected));
           });
-          document.getElementById("choiceFeedback").textContent = "یک انتخاب هیچ نتیجه آماری نمی‌سازد؛ Conjoint به چندین Choice Task و Sample مناسب نیاز دارد.";
+          document.getElementById("choiceFeedback").textContent = "یک انتخاب برای نتیجه‌گیری آماری کافی نیست؛ تحلیل انتخاب مشترک به چند وظیفه انتخاب و نمونه مناسب نیاز دارد.";
         });
       });
 
@@ -1119,9 +1267,9 @@
       const challenges = [
         "رقیب اصلی ۱۵٪ کاهش قیمت می‌دهد.",
         "هزینه متغیر واقعی ۱۲٪ بیشتر از فرض اولیه گزارش می‌شود.",
-        "PSM در نمونه جدید به سمت قیمت‌های پایین‌تر جابه‌جا می‌شود.",
-        "سالن‌ها Margin بیشتری مطالبه می‌کنند.",
-        "Guided Bundle نرخ تبدیل را بالا می‌برد اما Return Rate نیز افزایش پیدا می‌کند."
+        "در نمونه تازه، محدوده PSM به سمت قیمت‌های پایین‌تر جابه‌جا می‌شود.",
+        "سالن‌ها سهم بیشتری از حاشیه سود درخواست می‌کنند.",
+        "بسته راهنمایی‌شده نرخ تبدیل را افزایش می‌دهد، اما نرخ مرجوعی نیز بیشتر می‌شود."
       ];
       const selectedValues = container => [...container.querySelectorAll(".selected")].map(item => item.dataset.value);
       const sameSet = (a,b) => [...a].sort().join("|") === [...b].sort().join("|");
@@ -1150,28 +1298,28 @@
         const price=parseNumber(document.getElementById("v1Price").value), cost=parseNumber(document.getElementById("v1Cost").value);
         const structure=selectedValues(document.getElementById("structureV1"))[0], test=selectedValues(document.getElementById("testV1"))[0];
         const kpi=selectedValues(document.getElementById("kpiV1")), guardrail=document.getElementById("guardrailV1").value.trim(), risk=document.getElementById("riskV1").value.trim();
-        const errors=[]; if(!decision)errors.push("Decision لازم است");if(evidence.length!==3)errors.push("سه Evidence لازم است");if(price==null||price<=0)errors.push("Test Price معتبر لازم است");if(cost==null||cost<0)errors.push("Variable Cost معتبر لازم است");if(!structure)errors.push("Offer Structure لازم است");if(!test)errors.push("یک Main Test لازم است");if(kpi.length<2)errors.push("حداقل دو KPI لازم است");if(!guardrail)errors.push("Guardrail لازم است");if(!risk)errors.push("حداقل یک Risk لازم است");
+        const errors=[]; if(!decision)errors.push("یک تصمیم اصلی انتخاب کنید");if(evidence.length!==3)errors.push("دقیقاً سه شاهد انتخاب کنید");if(price==null||price<=0)errors.push("قیمت آزمون معتبر وارد کنید");if(cost==null||cost<0)errors.push("هزینه متغیر معتبر وارد کنید");if(!structure)errors.push("ساختار پیشنهاد را انتخاب کنید");if(!test)errors.push("یک آزمون اصلی انتخاب کنید");if(kpi.length<2)errors.push("حداقل دو شاخص انتخاب کنید");if(!guardrail)errors.push("مرز توقف را بنویسید");if(!risk)errors.push("حداقل یک ریسک بنویسید");
         if(errors.length){setStatus("statusV1",errors);return;}
         const cm=price-cost, rate=price>0?cm/price*100:NaN;
         workshopState.v1=Object.freeze({decision,evidence:[...evidence],price,cost,cm,rate,structure,test,kpi:[...kpi],guardrail,risk}); workshopState.v2=null; workshopState.phase="editing-v2";
         workshopState.challenge=challenges[Math.floor(Math.random()*challenges.length)];
-        document.getElementById("challengeCard").textContent=workshopState.challenge;document.getElementById("challengeReminder").textContent=workshopState.challenge;document.getElementById("reviewChallenge").textContent=workshopState.challenge;document.getElementById("challengeStatus").textContent="Challenge قفل شد";
-        setLocked(v1Selectors,true);setLocked(v2Selectors,false);document.getElementById("editV1").hidden=false;setStatus("statusV1",["V1 ثبت و قفل شد","Challenge آماده است"],true);
+        document.getElementById("challengeCard").textContent=workshopState.challenge;document.getElementById("challengeReminder").textContent=workshopState.challenge;document.getElementById("reviewChallenge").textContent=workshopState.challenge;document.getElementById("challengeStatus").textContent="چالش قفل شد";
+        setLocked(v1Selectors,true);setLocked(v2Selectors,false);document.getElementById("editV1").hidden=false;setStatus("statusV1",["نسخه اول ثبت و قفل شد","چالش آماده است"],true);
         go(slides.findIndex(slide=>slide.id==="case-05"));
       }
       function snapshotV2() {
-        if(!workshopState.v1||!workshopState.challenge){setStatus("statusV2",["ابتدا V1 را ثبت کنید"]);return;}
+        if(!workshopState.v1||!workshopState.challenge){setStatus("statusV2",["ابتدا نسخه اول را ثبت کنید"]);return;}
         const decision=selectedValues(document.getElementById("decisionV2"))[0],price=parseNumber(document.getElementById("v2Price").value),cost=parseNumber(document.getElementById("v2Cost").value),structure=document.getElementById("structureV2").value,test=document.getElementById("testV2").value,evidence=selectedValues(document.getElementById("evidenceV2")),kpi=selectedValues(document.getElementById("kpiV2")),guardrail=document.getElementById("guardrailV2").value.trim(),risk=document.getElementById("riskV2").value.trim(),rationale=document.getElementById("rationaleV2").value.trim();
-        const errors=[];if(!decision)errors.push("Decision لازم است");if(price==null||price<=0)errors.push("Price معتبر لازم است");if(cost==null||cost<0)errors.push("Cost معتبر لازم است");if(!structure)errors.push("Structure لازم است");if(!test)errors.push("Main Test لازم است");if(evidence.length!==3)errors.push("سه Evidence لازم است");if(kpi.length<2)errors.push("حداقل دو KPI لازم است");if(!guardrail)errors.push("Guardrail لازم است");if(!risk)errors.push("Risk لازم است");
+        const errors=[];if(!decision)errors.push("یک تصمیم اصلی انتخاب کنید");if(price==null||price<=0)errors.push("قیمت معتبر وارد کنید");if(cost==null||cost<0)errors.push("هزینه معتبر وارد کنید");if(!structure)errors.push("ساختار پیشنهاد را انتخاب کنید");if(!test)errors.push("آزمون اصلی را انتخاب کنید");if(evidence.length!==3)errors.push("دقیقاً سه شاهد انتخاب کنید");if(kpi.length<2)errors.push("حداقل دو شاخص انتخاب کنید");if(!guardrail)errors.push("مرز توقف را بنویسید");if(!risk)errors.push("ریسک را بنویسید");
         const v1=workshopState.v1;const changed=[decision!==v1.decision,price!==v1.price,structure!==v1.structure,!sameSet(evidence,v1.evidence),test!==v1.test,!sameSet(kpi,v1.kpi),guardrail!==v1.guardrail,risk!==v1.risk].filter(Boolean).length;
-        if(changed<2&&rationale.length<60)errors.push("حداقل دو Dimension را تغییر دهید یا Rationale کامل بنویسید");if(errors.length){setStatus("statusV2",errors);return;}
-        const cm=price-cost,rate=price>0?cm/price*100:NaN;workshopState.v2=Object.freeze({decision,evidence:[...evidence],price,cost,cm,rate,structure,test,kpi:[...kpi],guardrail,risk,rationale});workshopState.phase="v2-locked";setLocked(v2Selectors,true);document.getElementById("editV2").hidden=false;renderReview();setStatus("statusV2",["V2 ثبت و قفل شد"],true);go(slides.findIndex(slide=>slide.id==="case-07"));
+        if(changed<2&&rationale.length<60)errors.push("حداقل دو بخش تصمیم را تغییر دهید یا دلیل حفظ تصمیم را کامل بنویسید");if(errors.length){setStatus("statusV2",errors);return;}
+        const cm=price-cost,rate=price>0?cm/price*100:NaN;workshopState.v2=Object.freeze({decision,evidence:[...evidence],price,cost,cm,rate,structure,test,kpi:[...kpi],guardrail,risk,rationale});workshopState.phase="v2-locked";setLocked(v2Selectors,true);document.getElementById("editV2").hidden=false;renderReview();setStatus("statusV2",["نسخه دوم ثبت و قفل شد"],true);go(slides.findIndex(slide=>slide.id==="case-07"));
       }
-      function renderVersion(element,version){if(!version){element.textContent="هنوز ثبت نشده است.";return;}const rows=[["Decision",version.decision],["Price",`${faNumber(version.price)} M`],["Variable Cost",`${faNumber(version.cost)} M`],["CM",`${faNumber(version.cm)} M`],["CM Rate",`${faNumber(version.rate)}٪`],["Structure",version.structure],["Evidence",version.evidence.join("، ")],["Main Test",version.test],["KPI",version.kpi.join("، ")],["Guardrail",version.guardrail],["Risk",version.risk]];if(version.rationale)rows.push(["Rationale",version.rationale]);element.replaceChildren(...rows.map(([label,value])=>{const p=document.createElement("p"),b=document.createElement("b");b.textContent=`${label}: `;p.append(b,document.createTextNode(value));return p;}));}
-      function renderReview(){renderVersion(document.getElementById("summaryV1"),workshopState.v1);renderVersion(document.getElementById("summaryV2"),workshopState.v2);document.getElementById("reviewChallenge").textContent=workshopState.challenge||"هنوز Challenge ثبت نشده است.";}
-      function editV1(){workshopState.v1=null;workshopState.v2=null;workshopState.challenge=null;workshopState.phase="editing-v1";setLocked(v1Selectors,false);clearControls(v2Selectors);setLocked(v2Selectors,true);document.getElementById("editV1").hidden=true;document.getElementById("editV2").hidden=true;document.getElementById("challengeCard").textContent="پس از ثبت دوباره V1، Challenge جدید تولید می‌شود.";document.getElementById("challengeReminder").textContent="Challenge پس از ثبت V1 اینجا نمایش داده می‌شود.";document.getElementById("challengeStatus").textContent="Challenge پس از V1 قفل می‌شود";setStatus("statusV1",["V1 برای ویرایش باز شد؛ Challenge و V2 پاک شدند"]);renderReview();updateV2Economics();}
-      function editV2(){workshopState.v2=null;workshopState.phase="editing-v2";setLocked(v2Selectors,false);document.getElementById("editV2").hidden=true;setStatus("statusV2",["V2 برای ویرایش باز شد"]);renderReview();}
-      function resetCase(){if(!confirm("تمام انتخاب‌ها، Challenge و نسخه‌های V1 و V2 پاک شوند؟"))return;workshopState.phase="editing-v1";workshopState.v1=null;workshopState.v2=null;workshopState.challenge=null;clearControls(v1Selectors);clearControls(v2Selectors);document.getElementById("v1Price").value="۲٫۱۰";document.getElementById("v1Cost").value="۱٫۲۰";document.getElementById("v2Price").value="۲٫۱۰";document.getElementById("v2Cost").value="۱٫۲۰";setLocked(v1Selectors,false);setLocked(v2Selectors,true);document.getElementById("editV1").hidden=true;document.getElementById("editV2").hidden=true;document.getElementById("challengeCard").textContent="ابتدا V1 را ثبت کنید.";document.getElementById("challengeReminder").textContent="Challenge پس از ثبت V1 اینجا نمایش داده می‌شود.";document.getElementById("challengeStatus").textContent="Challenge پس از V1 قفل می‌شود";setStatus("statusV1",[]);setStatus("statusV2",[]);renderReview();updateV1Economics();updateV2Economics();scheduleFit();}
+      function renderVersion(element,version){if(!version){element.textContent="هنوز ثبت نشده است.";return;}const rows=[["تصمیم",version.decision],["قیمت",`${faNumber(version.price)} میلیون`],["هزینه متغیر",`${faNumber(version.cost)} میلیون`],["حاشیه مشارکت",`${faNumber(version.cm)} میلیون`],["نرخ حاشیه مشارکت",`${faNumber(version.rate)}٪`],["ساختار پیشنهاد",version.structure],["شواهد",version.evidence.join("، ")],["آزمون اصلی",version.test],["شاخص‌ها",version.kpi.join("، ")],["مرز توقف",version.guardrail],["ریسک",version.risk]];if(version.rationale)rows.push(["منطق تصمیم",version.rationale]);element.replaceChildren(...rows.map(([label,value])=>{const p=document.createElement("p"),b=document.createElement("b");b.textContent=`${label}: `;p.append(b,document.createTextNode(value));return p;}));applyGlossary(element);}
+      function renderReview(){renderVersion(document.getElementById("summaryV1"),workshopState.v1);renderVersion(document.getElementById("summaryV2"),workshopState.v2);document.getElementById("reviewChallenge").textContent=workshopState.challenge||"هنوز چالشی ثبت نشده است.";}
+      function editV1(){workshopState.v1=null;workshopState.v2=null;workshopState.challenge=null;workshopState.phase="editing-v1";setLocked(v1Selectors,false);clearControls(v2Selectors);setLocked(v2Selectors,true);document.getElementById("editV1").hidden=true;document.getElementById("editV2").hidden=true;document.getElementById("challengeCard").textContent="پس از ثبت دوباره نسخه اول، چالش تازه ساخته می‌شود.";document.getElementById("challengeReminder").textContent="چالش پس از ثبت نسخه اول اینجا نمایش داده می‌شود.";document.getElementById("challengeStatus").textContent="چالش پس از نسخه اول قفل می‌شود";setStatus("statusV1",["نسخه اول برای ویرایش باز شد؛ چالش و نسخه دوم پاک شدند"]);renderReview();updateV2Economics();}
+      function editV2(){workshopState.v2=null;workshopState.phase="editing-v2";setLocked(v2Selectors,false);document.getElementById("editV2").hidden=true;setStatus("statusV2",["نسخه دوم برای ویرایش باز شد"]);renderReview();}
+      function resetCase(){if(!confirm("تمام انتخاب‌ها، چالش و نسخه‌های اول و دوم پاک شوند؟"))return;workshopState.phase="editing-v1";workshopState.v1=null;workshopState.v2=null;workshopState.challenge=null;clearControls(v1Selectors);clearControls(v2Selectors);document.getElementById("v1Price").value="۲٫۱۰";document.getElementById("v1Cost").value="۱٫۲۰";document.getElementById("v2Price").value="۲٫۱۰";document.getElementById("v2Cost").value="۱٫۲۰";setLocked(v1Selectors,false);setLocked(v2Selectors,true);document.getElementById("editV1").hidden=true;document.getElementById("editV2").hidden=true;document.getElementById("challengeCard").textContent="ابتدا نسخه اول را ثبت کنید.";document.getElementById("challengeReminder").textContent="چالش پس از ثبت نسخه اول اینجا نمایش داده می‌شود.";document.getElementById("challengeStatus").textContent="چالش پس از نسخه اول قفل می‌شود";setStatus("statusV1",[]);setStatus("statusV2",[]);renderReview();updateV1Economics();updateV2Economics();scheduleFit();}
       setLocked(v2Selectors,true);
       document.getElementById("saveV1")?.addEventListener("click",snapshotV1);document.getElementById("saveV2")?.addEventListener("click",snapshotV2);document.getElementById("editV1")?.addEventListener("click",editV1);document.getElementById("editV2")?.addEventListener("click",editV2);document.getElementById("resetCase")?.addEventListener("click",resetCase);
       document.getElementById("toggleAnalysis")?.addEventListener("click",()=>{document.getElementById("suggestedAnalysis").classList.toggle("open");scheduleFit();});
@@ -1192,6 +1340,11 @@
       lessonCloseBtn.addEventListener("click", closeLesson);
       lessonBackdrop.addEventListener("click", closeLesson);
       hotspotCloseBtn.addEventListener("click", closeHotspot);
+      document.addEventListener("pointerover",event=>{const term=event.target.closest?.(".bilingual-term");if(term&&event.pointerType!=="touch")openTerm(term);});
+      document.addEventListener("pointerout",event=>{const term=event.target.closest?.(".bilingual-term");if(term&&event.pointerType!=="touch"&&!term.contains(event.relatedTarget))closeTerm();});
+      document.addEventListener("focusin",event=>{const term=event.target.closest?.(".bilingual-term");if(term)openTerm(term);});
+      document.addEventListener("focusout",event=>{if(event.target.closest?.(".bilingual-term"))closeTerm();});
+      document.addEventListener("click",event=>{const term=event.target.closest?.(".bilingual-term");if(term){event.preventDefault();openTerm(term);return;}if(activeTerm)closeTerm();});
       document.addEventListener("pointerdown", event => {
         if (!hotspotPopover.classList.contains("open")) return;
         if (hotspotPopover.contains(event.target) || event.target.closest?.(".hotspot")) return;
@@ -1216,6 +1369,8 @@
           else if (event.key === "Tab") trapDrawerFocus(event);
           return;
         }
+        if (activeTerm && event.key === "Escape") { event.preventDefault(); closeTerm(); return; }
+        if (event.target?.closest?.(".bilingual-term") && ["Enter"," "].includes(event.key)) { event.preventDefault(); activeTerm===event.target?closeTerm():openTerm(event.target); return; }
         if (hotspotPopover.classList.contains("open") && event.key === "Escape") { event.preventDefault(); closeHotspot(); return; }
         const targetTag = event.target?.tagName;
         if (["INPUT", "TEXTAREA", "SELECT"].includes(targetTag)) return;
@@ -1241,6 +1396,7 @@
       window.addEventListener("resize", () => {
         if (innerWidth > 900) setSidebar(false);
         if (activeHotspot) positionHotspot(activeHotspot);
+        if (activeTerm) positionTerm(activeTerm);
         scheduleFit();
       });
       window.addEventListener("hashchange", () => {
@@ -1264,6 +1420,7 @@
       }).observe(document.getElementById("stage"), { subtree:true, childList:true, characterData:true });
 
       try {
+        applyGlossary(document.getElementById("stage"));
         setTheme(localStorage.getItem("html-deck-theme") || "light");
         setProjector(localStorage.getItem("html-deck-projector") === "true");
       } catch { setTheme("light"); setProjector(false); }
